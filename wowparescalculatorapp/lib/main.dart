@@ -55,18 +55,24 @@ class CardListView extends StatefulWidget {
 class _CardListViewState extends State<CardListView> {
   // List<int> counters = List.generate(3, (index) => 0); old
   //List<String> Food_Names = ['Regular Pares','Mami Pares','Rice',];
+
+  //Dishes:
   int ParesValue = 50;
   int ParesRegular_Amount = 0;
 
   int ParesMamiValue = 50;
   int ParesMami_Amount = 0;
 
+  //Drinks:
+  int CokeValue = 20;
+  int CokeAmount = 0;
+
+  //Extra:
   int RiceValue = 15;
   int Rice = 0;
 
-   TextEditingController User_Money = TextEditingController();
-
-  
+  //User Money
+  TextEditingController User_Money = TextEditingController();
 
  @override
   Widget build(BuildContext context) {
@@ -76,6 +82,7 @@ class _CardListViewState extends State<CardListView> {
           child: ListView(
             padding: EdgeInsets.all(8),
             children: [
+              Text("Dishes: ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               CardGridWidget(
                 name: 'Pares Regular',
                 counter: ParesRegular_Amount,
@@ -94,6 +101,17 @@ class _CardListViewState extends State<CardListView> {
                   });
                 },
               ),
+              Text("Drinks: ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              CardGridWidget(
+                name: 'Coke',
+                counter: CokeAmount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    CokeAmount = newCount;
+                  });
+                },
+              ),
+              Text("Extra: ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               CardGridWidget(
                 name: 'Rice',
                 counter: Rice,
@@ -113,12 +131,18 @@ ElevatedButton(
       context,
       MaterialPageRoute(
         builder: (context) => ResultsPage(
+          //Dishes
           ParesValue: ParesValue,
           ParesRegular_Amount: ParesRegular_Amount,
 
           ParesMamiValue: ParesMamiValue,
           ParesMami_Amount: ParesMami_Amount,
+
+          //Drinks
+          CokeValue: CokeValue,
+          CokeAmount: CokeAmount,
           
+          //Extra
           RiceValue: RiceValue,
           Rice: Rice,
         ),
@@ -152,7 +176,7 @@ class CardGridWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, )),
             SizedBox(height: 10),
             Image.network('https://via.placeholder.com/100', width: 100, height: 100),
             SizedBox(height: 10),
