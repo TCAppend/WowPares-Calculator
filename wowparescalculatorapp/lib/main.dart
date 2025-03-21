@@ -48,6 +48,8 @@ class _InputData extends State<MyHomePage> {
 }
 
 class CardListView extends StatefulWidget {
+  const CardListView({super.key});
+
   @override
   _CardListViewState createState() => _CardListViewState();
 }
@@ -164,7 +166,7 @@ class CardGridWidget extends StatelessWidget {
   final int counter;
   final ValueChanged<int> onCounterChanged;
 
-  CardGridWidget({required this.name, required this.counter, required this.onCounterChanged});
+  const CardGridWidget({super.key, required this.name, required this.counter, required this.onCounterChanged});
 
   @override
   Widget build(BuildContext context) {

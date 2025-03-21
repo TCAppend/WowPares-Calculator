@@ -17,7 +17,7 @@ class ResultsPage extends StatelessWidget {
   final int Rice;
 
 
-  ResultsPage({
+  const ResultsPage({super.key, 
     //Dishes
     required this.ParesValue,
     required this.ParesRegular_Amount,
