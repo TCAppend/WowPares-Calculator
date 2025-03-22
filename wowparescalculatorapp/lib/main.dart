@@ -65,9 +65,30 @@ class _CardListViewState extends State<CardListView> {
   int ParesMamiValue = 50;
   int ParesMami_Amount = 0;
 
+  int ParesBagnetValue = 75;
+  int ParesBagnet_Amount = 0;
+
+  int ParesOverloadValue = 120;
+  int ParesOverload_Amount = 0;
+
+  int LugawValue = 20;
+  int Lugaw_Amount = 0;
+
   //Drinks:
-  int CokeValue = 20;
+  int CokeValue = 25;
   int CokeAmount = 0;
+
+  int SpriteValue = 25;
+  int Spriteamount = 0;
+
+  int MountainDewValue = 25;
+  int MountainDewAmount = 0;
+
+  int RoyalValue = 25;
+  int RoyalAmount = 0;
+
+  int WaterBottleValue = 25;
+  int WaterBottleAmount = 0;
 
   //Extra:
   int RiceValue = 15;
@@ -76,7 +97,7 @@ class _CardListViewState extends State<CardListView> {
   //User Money
   TextEditingController User_Money = TextEditingController();
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -95,7 +116,7 @@ class _CardListViewState extends State<CardListView> {
                 },
               ),
               CardGridWidget(
-                name: 'pares Mami',
+                name: 'Pares Mami',
                 counter: ParesMami_Amount,
                 onCounterChanged: (newCount) {
                   setState(() {
@@ -103,6 +124,34 @@ class _CardListViewState extends State<CardListView> {
                   });
                 },
               ),
+              CardGridWidget(
+                name: 'Pares Bagnet',
+                counter: ParesBagnet_Amount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    ParesBagnet_Amount = newCount;
+                  });
+                },
+              ),
+              CardGridWidget(
+                name: 'Pares Overload',
+                counter: ParesOverload_Amount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    ParesOverload_Amount = newCount;
+                  });
+                },
+              ),
+              CardGridWidget(
+                name: 'Lugaw',
+                counter: Lugaw_Amount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    Lugaw_Amount = newCount;
+                  });
+                },
+              ),
+
               Text("Drinks: ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               CardGridWidget(
                 name: 'Coke',
@@ -113,6 +162,43 @@ class _CardListViewState extends State<CardListView> {
                   });
                 },
               ),
+              CardGridWidget(
+                name: 'Sprite',
+                counter: Spriteamount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    SpriteValue = newCount;
+                  });
+                },
+              ),
+              CardGridWidget(
+                name: 'Mountain Dew',
+                counter: MountainDewAmount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    MountainDewAmount = newCount;
+                  });
+                },
+              ),
+              CardGridWidget(
+                name: 'Royal',
+                counter: RoyalAmount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    RoyalAmount = newCount;
+                  });
+                },
+              ),
+              CardGridWidget(
+                name: 'Water Bottle',
+                counter: WaterBottleAmount,
+                onCounterChanged: (newCount) {
+                  setState(() {
+                    WaterBottleAmount = newCount;
+                  });
+                },
+              ),
+
               Text("Extra: ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               CardGridWidget(
                 name: 'Rice',
@@ -123,36 +209,49 @@ class _CardListViewState extends State<CardListView> {
                   });
                 },
               ),
-              
             ],
           ),
         ),
-ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultsPage(
-          //Dishes
-          ParesValue: ParesValue,
-          ParesRegular_Amount: ParesRegular_Amount,
 
-          ParesMamiValue: ParesMamiValue,
-          ParesMami_Amount: ParesMami_Amount,
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultsPage(
+                  // Dishes
+                  ParesValue: ParesValue,
+                  ParesRegular_Amount: ParesRegular_Amount,
+                  ParesMamiValue: ParesMamiValue,
+                  ParesMami_Amount: ParesMami_Amount,
+                  ParesBagnetValue: ParesBagnetValue,
+                  ParesBagnet_Amount: ParesBagnet_Amount,
+                  ParesOverloadValue: ParesOverloadValue,
+                  ParesOverload_Amount: ParesOverload_Amount,
+                  LugawValue: LugawValue,
+                  Lugaw_Amount: Lugaw_Amount,
 
-          //Drinks
-          CokeValue: CokeValue,
-          CokeAmount: CokeAmount,
-          
-          //Extra
-          RiceValue: RiceValue,
-          Rice: Rice,
+                  // Drinks
+                  CokeValue: CokeValue,
+                  CokeAmount: CokeAmount,
+                  SpriteValue: SpriteValue,
+                  SpriteAmount: Spriteamount,
+                  MountainDewValue: MountainDewValue,
+                  MountainDewAmount: MountainDewAmount,
+                  RoyalValue: RoyalValue,
+                  RoyalAmount: RoyalAmount,
+                  WaterBottleValue: WaterBottleValue,
+                  WaterBottleAmount: WaterBottleAmount,
+
+                  // Extra
+                  RiceValue: RiceValue,
+                  Rice: Rice,
+                ),
+              ),
+            );
+          },
+          child: Text("View Results"),
         ),
-      ),
-    );
-  },
-  child: Text("View Results"),
-),
       ],
     );
   }
