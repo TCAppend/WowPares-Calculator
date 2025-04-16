@@ -30,12 +30,15 @@ class ResultsPage extends StatelessWidget {
   final int RoyalValue;
   final int RoyalAmount;
 
-  final int WaterBottleValue;
-  final int WaterBottleAmount;
+  final int WaterBottlesmallValue;
+  final int WaterBottlesmallAmount;
 
   //Extra
   final int RiceValue;
   final int Rice;
+
+  // User money
+  final int Money;
 
 
   const ResultsPage({super.key, 
@@ -68,12 +71,15 @@ class ResultsPage extends StatelessWidget {
     required this.RoyalValue,
     required this.RoyalAmount,
 
-    required this.WaterBottleValue,
-    required this.WaterBottleAmount,
+    required this.WaterBottlesmallValue,
+    required this.WaterBottlesmallAmount,
 
     //Extra
     required this.RiceValue,
     required this.Rice,
+
+    //user money
+    required this.Money,
   });
 
 
@@ -81,55 +87,66 @@ class ResultsPage extends StatelessWidget {
 
 
    @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 182, 25, 25),
-        title: Text(
-          'WowPares Calculator',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Center(
+Widget build(BuildContext context) {
+  final int total = 
+      (ParesValue * ParesRegular_Amount) +
+      (ParesMamiValue * ParesMami_Amount) +
+      (ParesBagnetValue * ParesBagnet_Amount) +
+      (ParesOverloadValue * ParesOverload_Amount) +
+      (LugawValue * Lugaw_Amount) +
+      (CokeValue * CokeAmount) +
+      (SpriteValue * SpriteAmount) +
+      (MountainDewValue * MountainDewAmount) +
+      (RoyalValue * RoyalAmount) +
+      (WaterBottlesmallValue * WaterBottlesmallAmount) +
+      (RiceValue * Rice);
+
+  List<Widget> items = [];
+
+  void addItem(String label, int value) {
+    if (value > 0) {
+      items.add(Text("$label: $value", style: TextStyle(fontSize: 18)));
+    }
+  }
+
+  
+  addItem("Regular Pares", ParesValue * ParesRegular_Amount);
+  addItem("Mami Pares", ParesMamiValue * ParesMami_Amount);
+  addItem("Bagnet Pares", ParesBagnetValue * ParesBagnet_Amount);
+  addItem("Overload Pares", ParesOverloadValue * ParesOverload_Amount);
+  addItem("Lugaw", LugawValue * Lugaw_Amount);
+
+  addItem("Coke", CokeValue * CokeAmount);
+  addItem("Sprite", SpriteValue * SpriteAmount);
+  addItem("Mountain Dew", MountainDewValue * MountainDewAmount);
+  addItem("Royal", RoyalValue * RoyalAmount);
+  addItem("Water Bottle", WaterBottlesmallValue * WaterBottlesmallAmount);
+
+  addItem("Rice", RiceValue * Rice);
+
+
+  int Final = Money - total;
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Color.fromARGB(255, 182, 25, 25),
+      title: Text('WowPares Calculator', style: TextStyle(color: Colors.white)),
+    ),
+    body: Center(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Text("Dishes", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    Text("Regular Pares: ${ParesValue * ParesRegular_Amount}", style: TextStyle(fontSize: 18)),
-                    Text("Mami Pares: ${ParesMamiValue * ParesMami_Amount}", style: TextStyle(fontSize: 18)),
-                    Text("Bagnet Pares: ${ParesBagnetValue * ParesBagnet_Amount}", style: TextStyle(fontSize: 18)),
-                    Text("Overload Pares: ${ParesOverloadValue * ParesOverload_Amount}", style: TextStyle(fontSize: 18)),
-                    Text("Lugaw: ${LugawValue * Lugaw_Amount}", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("Drinks", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    Text("Coke: ${CokeValue * CokeAmount}", style: TextStyle(fontSize: 18)),
-                    Text("Sprite: ${SpriteValue * SpriteAmount}", style: TextStyle(fontSize: 18)),
-                    Text("Mountain Dew: ${MountainDewValue * MountainDewAmount}", style: TextStyle(fontSize: 18)),
-                    Text("Royal: ${RoyalValue * RoyalAmount}", style: TextStyle(fontSize: 18)),
-                    Text("Water Bottle: ${WaterBottleValue * WaterBottleAmount}", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("Extras", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    Text("Rice: ${RiceValue * Rice}", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ],
-            ),
+            if (items.isNotEmpty)
+              Text("Order Summary", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ...items,
             SizedBox(height: 20),
-            Text(
-              "Total: ${(RiceValue * Rice) + (ParesMamiValue * ParesMami_Amount) + (ParesValue * ParesRegular_Amount) + (ParesBagnetValue * ParesBagnet_Amount) + (ParesOverloadValue * ParesOverload_Amount) + (LugawValue * Lugaw_Amount) + (CokeValue * CokeAmount) + (SpriteValue * SpriteAmount) + (MountainDewValue * MountainDewAmount) + (RoyalValue * RoyalAmount) + (WaterBottleValue * WaterBottleAmount)}",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            Text("Total income: $total", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            Text("Customer money: $Money", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            Text("Customer change: $Final", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -140,6 +157,8 @@ class ResultsPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
