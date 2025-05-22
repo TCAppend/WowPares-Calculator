@@ -96,8 +96,14 @@ class _CardListViewState extends State<CardListView> {
   // List<int> counters = List.generate(3, (index) => 0); old
   //List<String> Food_Names = ['Regular Pares','Mami Pares','Rice',];
 
+
+//Implement in the future for editing
+List<String> Item_Value = [];
+List<String> Item_Amount = [];
+
+
   //Dishes:
-  int ParesValue = 50;
+  int ParesValue = 60;
   int ParesRegular_Amount = 0;
 
   int ParesMamiValue = 50;
