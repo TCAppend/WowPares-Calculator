@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wowparescalculatorapp/receipt_page.dart';
 import 'results_page.dart';
 import 'package:flutter/services.dart';
+import 'package:wowparescalculatorapp/receipt.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,21 +63,46 @@ class _InputData extends State<MyHomePage> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            ...drawerItems.map((item) => ListTile(
-      title: Text(item),
-      onTap: () {
-        // TODO: Implement navigation or functionality
-      },
-    )),
-            const Divider(),
-            ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Add Recipt'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                _addDrawerItem();
-              },
-            ),
+            ...drawerItems.asMap().entries.map((entry) {
+  int index = entry.key;
+  String item = entry.value;
+  return ListTile(
+    title: Text(item),
+    onTap: () {
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReceiptPage(
+            title: item,
+            receiptData: receipts[index],
+          ),
+        ),
+      );
+    },
+  );
+}),
+const Divider(),
+ListTile(
+  leading: Icon(Icons.add),
+  title: Text('Add Recipt'),
+  onTap: () {
+    setState(() {
+      drawerItems.add('New Recipt ${drawerItems.length + 1}');
+      receipts.add(ReceiptData());
+    });
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReceiptPage(
+          title: drawerItems.last,
+          receiptData: receipts.last,
+        ),
+      ),
+    );
+  },
+),
           ],
         ),
       ),
@@ -477,6 +504,10 @@ class CardGridWidget extends StatelessWidget {
     );
   }
 }
+// Remove the duplicate ReceiptData class and use the one from receipt.dart
+
+List<ReceiptData> receipts = [];
+
 
 
 
