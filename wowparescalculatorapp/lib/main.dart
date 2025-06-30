@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wowparescalculatorapp/receipt_page.dart';
+import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
 import 'results_page.dart';
 import 'package:flutter/services.dart';
 import 'package:wowparescalculatorapp/receipt.dart';
@@ -35,7 +35,7 @@ class _InputData extends State<MyHomePage> {
 
   void _addDrawerItem() {
     setState(() {
-      drawerItems.add('New Recipt ${drawerItems.length + 1}');
+      drawerItems.add('New Receipt ${drawerItems.length + 1}');
     });
   }
 
@@ -73,10 +73,10 @@ class _InputData extends State<MyHomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ReceiptPage(
-            title: item,
-            receiptData: receipts[index],
-          ),
+          builder: (context) => receipt_page.ReceiptPage(
+              title: item,
+              receiptData: receipts[index],
+            ),
         ),
       );
     },
@@ -85,17 +85,17 @@ class _InputData extends State<MyHomePage> {
 const Divider(),
 ListTile(
   leading: Icon(Icons.add),
-  title: Text('Add Recipt'),
+  title: Text('Add Receipt'),
   onTap: () {
     setState(() {
-      drawerItems.add('New Recipt ${drawerItems.length + 1}');
+      drawerItems.add('New Receipt ${drawerItems.length + 1}');
       receipts.add(ReceiptData());
     });
     Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReceiptPage(
+        builder: (context) => receipt_page.ReceiptPage(
           title: drawerItems.last,
           receiptData: receipts.last,
         ),
