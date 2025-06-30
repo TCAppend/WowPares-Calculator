@@ -5,6 +5,7 @@ class ReceiptData {
   int paresBagnetAmount;
   int paresOverloadAmount;
   int lugawAmount;
+  int lugawSpecialAmount;
 
   // Drinks
   int cokeAmount;
@@ -12,9 +13,12 @@ class ReceiptData {
   int mountainDewAmount;
   int royalAmount;
   int waterBottleSmallAmount;
+  int waterBottleLargeAmount;
 
   // Extra
   int rice;
+  int egg;
+  int tokwa;
 
   // User Money
   int userMoney;
@@ -31,6 +35,10 @@ class ReceiptData {
     this.royalAmount = 0,
     this.waterBottleSmallAmount = 0,
     this.rice = 0,
+    this.lugawSpecialAmount = 0,
+    this.waterBottleLargeAmount = 0,  
+    this.egg = 0,
+    this.tokwa = 0,
     this.userMoney = 0,
   });
 
@@ -49,6 +57,10 @@ class ReceiptData {
     int? waterBottleSmallAmount,
     int? rice,
     int? userMoney,
+    int? lugawSpecialAmount,
+    int? waterBottleLargeAmount,  
+    int? egg,
+    int? tokwa,
   }) {
     return ReceiptData(
       paresRegularAmount: paresRegularAmount ?? this.paresRegularAmount,
@@ -62,6 +74,10 @@ class ReceiptData {
       royalAmount: royalAmount ?? this.royalAmount,
       waterBottleSmallAmount: waterBottleSmallAmount ?? this.waterBottleSmallAmount,
       rice: rice ?? this.rice,
+      lugawSpecialAmount: lugawSpecialAmount ?? this.lugawSpecialAmount,
+      waterBottleLargeAmount: waterBottleLargeAmount ?? this.waterBottleLargeAmount,
+      egg: egg ?? this.egg,
+      tokwa: tokwa ?? this.tokwa,
       userMoney: userMoney ?? this.userMoney,
     );
   }

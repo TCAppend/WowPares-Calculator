@@ -33,16 +33,20 @@ class _ReceiptPageState extends State<ReceiptPage> {
     int dishesTotal = (60 * d.paresRegularAmount) +
         (50 * d.paresMamiAmount) +
         (75 * d.paresBagnetAmount) +
-        (120 * d.paresOverloadAmount) +
-        (20 * d.lugawAmount);
+        (130 * d.paresOverloadAmount) +
+        (20 * d.lugawAmount) +
+        (50 * d.lugawSpecialAmount);
 
     int drinksTotal = (25 * d.cokeAmount) +
         (25 * d.spriteAmount) +
         (25 * d.mountainDewAmount) +
         (25 * d.royalAmount) +
-        (20 * d.waterBottleSmallAmount);
+        (25 * d.waterBottleSmallAmount) + 
+        (35 * d.waterBottleLargeAmount);
 
-    int extrasTotal = (15 * d.rice);
+    int extrasTotal = (15 * d.rice) + 
+        (15 * d.egg) + 
+        (15 * d.tokwa); 
 
     return dishesTotal + drinksTotal + extrasTotal;
   }
@@ -98,7 +102,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       },
                     ),
                     CardGridWidget(
-                      name: 'Pares Overload (120)',
+                      name: 'Pares Overload (130)',
                       counter: d.paresOverloadAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -112,6 +116,15 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       onCounterChanged: (newCount) {
                         setState(() {
                           d.lugawAmount = newCount;
+                        });
+                      },
+                    ),
+                    CardGridWidget(
+                      name: 'Lugaw Special (50)',
+                      counter: d.lugawSpecialAmount,
+                      onCounterChanged: (newCount) {
+                        setState(() {
+                          d.lugawSpecialAmount = newCount;
                         });
                       },
                     ),
@@ -164,11 +177,20 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       },
                     ),
                     CardGridWidget(
-                      name: 'Water Bottle small(20)',
+                      name: 'Water Bottle small(25)',
                       counter: d.waterBottleSmallAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
                           d.waterBottleSmallAmount = newCount;
+                        });
+                      },
+                    ),
+                    CardGridWidget(
+                      name: 'Water Bottle large(35)',
+                      counter: d.waterBottleLargeAmount,
+                      onCounterChanged: (newCount) {
+                        setState(() {
+                          d.waterBottleLargeAmount = newCount;
                         });
                       },
                     ),
@@ -190,6 +212,24 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       onCounterChanged: (newCount) {
                         setState(() {
                           d.rice = newCount;
+                        });
+                      },
+                    ),
+                    CardGridWidget(
+                      name: 'Egg (15)',
+                      counter: d.egg,
+                      onCounterChanged: (newCount) {
+                        setState(() {
+                          d.egg = newCount;
+                        });
+                      },
+                    ),
+                    CardGridWidget(
+                      name: 'Tokwa (15)',
+                      counter: d.tokwa,
+                      onCounterChanged: (newCount) {
+                        setState(() {
+                          d.tokwa = newCount;
                         });
                       },
                     ),
@@ -240,10 +280,12 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               ParesMami_Amount: d.paresMamiAmount,
                               ParesBagnetValue: 75,
                               ParesBagnet_Amount: d.paresBagnetAmount,
-                              ParesOverloadValue: 120,
+                              ParesOverloadValue: 130,
                               ParesOverload_Amount: d.paresOverloadAmount,
                               LugawValue: 20,
                               Lugaw_Amount: d.lugawAmount,
+                              LugawspecialValue: 50, // Assuming same value as regular Lugaw
+                              Lugawspecial_Amount: d.lugawSpecialAmount,
                               CokeValue: 25,
                               CokeAmount: d.cokeAmount,
                               SpriteValue: 25,
@@ -252,11 +294,18 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               MountainDewAmount: d.mountainDewAmount,
                               RoyalValue: 25,
                               RoyalAmount: d.royalAmount,
-                              WaterBottlesmallValue: 20,
+                              WaterBottlesmallValue: 25,
                               WaterBottlesmallAmount: d.waterBottleSmallAmount,
+                              WaterBottlelargeValue: 35,
+                              WaterBottlelargeAmount: d.waterBottleLargeAmount,
                               RiceValue: 15,
                               Rice: d.rice,
-                              Money: d.userMoney,
+                              eggValue: 15,
+                              eggPrice: d.egg, // Assuming egg is a count, not a price
+                              TokwaValue: 20, // Assuming Tokwa has a value of 20
+                              TokwaPrice: d.tokwa, // Assuming tokwa is a count, not a price
+                              // User Money
+                              Money: d.userMoney, 
                             ),
                           ),
                         );

@@ -137,11 +137,14 @@ List<String> Item_Amount = [];
   int ParesBagnetValue = 75;
   int ParesBagnet_Amount = 0;
 
-  int ParesOverloadValue = 120;
+  int ParesOverloadValue = 130;
   int ParesOverload_Amount = 0;
 
   int LugawValue = 20;
   int Lugaw_Amount = 0;
+
+  int LugawspecialValue = 50;
+  int Lugawspecial_Amount = 0;
 
   //Drinks:
   int CokeValue = 25;
@@ -156,16 +159,25 @@ List<String> Item_Amount = [];
   int RoyalValue = 25;
   int RoyalAmount = 0;
 
-  int WaterBottlesmallValue = 20;
+  int WaterBottlesmallValue = 25;
   int WaterBottlesmallAmount = 0;
+
+  int WaterBottlelargeValue = 35;
+  int WaterBottlelargeAmount = 0;
 
   //Extra:
   int RiceValue = 15;
   int Rice = 0;
 
+  int eggValue = 15;
+  int eggPrice = 0;
+
+  int TokwaValue = 15;
+  int TokwaPrice = 0;
+
   //User Money
  TextEditingController userMoneyController = TextEditingController();
-int User_Money = 0;
+  int User_Money = 0;
 
 int getTotal() {
   // Dishes
@@ -173,7 +185,7 @@ int getTotal() {
                     (ParesMamiValue * ParesMami_Amount) +
                     (ParesBagnetValue * ParesBagnet_Amount) +
                     (ParesOverloadValue * ParesOverload_Amount) +
-                    (LugawValue * Lugaw_Amount);
+                    (LugawValue * Lugaw_Amount) + (LugawspecialValue * Lugawspecial_Amount);
 
   // Drinks
   int drinksTotal = (CokeValue * CokeAmount) +
@@ -183,7 +195,9 @@ int getTotal() {
                     (WaterBottlesmallValue * WaterBottlesmallAmount);
 
   // Extra
-  int extrasTotal = (RiceValue * Rice);
+  int extrasTotal = (RiceValue * Rice) + 
+                    (eggValue * eggPrice) +
+                    (TokwaValue * TokwaPrice);
 
   // Return the sum of everything
   return dishesTotal + drinksTotal + extrasTotal;
@@ -252,6 +266,16 @@ int getTotal() {
             });
           },
         ),
+        CardGridWidget(
+          name: 'Lugaw Special ($LugawspecialValue)',
+          counter: Lugawspecial_Amount,
+          onCounterChanged: (newCount) {
+            setState(() {
+              Lugawspecial_Amount = newCount;
+            });
+          },
+        ),
+        // Add more dishes as needed
       ],
     ),
 
@@ -312,6 +336,16 @@ int getTotal() {
             });
           },
         ),
+        CardGridWidget(
+          name: 'Water Bottle large(35)',
+          counter: WaterBottlelargeAmount,
+          onCounterChanged: (newCount) {
+            setState(() {
+              WaterBottlelargeAmount = newCount;
+            });
+          },
+        ),
+        // Add more drinks as needed
       ],
     ),
 
@@ -332,6 +366,24 @@ int getTotal() {
           onCounterChanged: (newCount) {
             setState(() {
               Rice = newCount;
+            });
+          },
+        ),
+        CardGridWidget(
+          name: 'Egg ($eggValue)',
+          counter: eggPrice,
+          onCounterChanged: (newCount) {
+            setState(() {
+              eggPrice = newCount;
+            });
+          },
+        ),
+        CardGridWidget(
+          name: 'Tokwa ($TokwaValue)',
+          counter: TokwaPrice,
+          onCounterChanged: (newCount) {
+            setState(() {
+              TokwaPrice = newCount;
             });
           },
         ),
@@ -394,6 +446,8 @@ Text("Total value: ${getTotal()}", style: TextStyle(fontSize: 20, fontWeight: Fo
                     ParesOverload_Amount: ParesOverload_Amount,
                     LugawValue: LugawValue,
                     Lugaw_Amount: Lugaw_Amount,
+                    LugawspecialValue: LugawspecialValue,
+                    Lugawspecial_Amount: Lugawspecial_Amount,
 
                     // Drinks
                     CokeValue: CokeValue,
@@ -406,10 +460,18 @@ Text("Total value: ${getTotal()}", style: TextStyle(fontSize: 20, fontWeight: Fo
                     RoyalAmount: RoyalAmount,
                     WaterBottlesmallValue: WaterBottlesmallValue,
                     WaterBottlesmallAmount: WaterBottlesmallAmount,
+                    WaterBottlelargeValue: WaterBottlelargeValue,
+                    WaterBottlelargeAmount: WaterBottlelargeAmount,
 
                     // Extra
                     RiceValue: RiceValue,
                     Rice: Rice,
+
+                    eggValue: eggValue,
+                    eggPrice: eggPrice,
+                    
+                    TokwaValue: TokwaValue,
+                    TokwaPrice: TokwaPrice,
 
                     // User Money 
                     Money: User_Money
@@ -504,7 +566,7 @@ class CardGridWidget extends StatelessWidget {
     );
   }
 }
-// Remove the duplicate ReceiptData class and use the one from receipt.dart
+
 
 List<ReceiptData> receipts = [];
 

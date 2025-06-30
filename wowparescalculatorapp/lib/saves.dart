@@ -17,6 +17,9 @@ class ResultsPage extends StatelessWidget {
   final int LugawValue;
   final int Lugaw_Amount;
 
+  final int Lugawspecial_Amount;
+  final int LugawspecialValue;
+
   // Drinks
   final int CokeValue;
   final int CokeAmount;
@@ -57,6 +60,9 @@ class ResultsPage extends StatelessWidget {
 
     required this.LugawValue,
     required this.Lugaw_Amount,
+
+    required this.Lugawspecial_Amount,
+    required this.LugawspecialValue,
 
     // Drinks
     required this.CokeValue,
