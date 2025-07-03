@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
-import 'results_page.dart';
-import 'package:flutter/services.dart';
 import 'package:wowparescalculatorapp/receipt.dart';
 
 void main() {
@@ -17,20 +15,49 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 182, 25, 25)),
       ),
-      home: const MyHomePage(title: 'WowPares Calculator'),
+      home: const WelcomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _InputData();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+        title: const Text('WowPares Calculator', style: TextStyle(color: Colors.white)),
+      ),
+      body: Center(
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.receipt_long),
+          label: const Text('Go to Receipts'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReceiptsDashboardPage(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _InputData extends State<MyHomePage> {
+// This is your new receipts dashboard page.
+// Move your old _InputData and receipt list logic here!
+class ReceiptsDashboardPage extends StatefulWidget {
+  const ReceiptsDashboardPage({super.key});
+
+  @override
+  State<ReceiptsDashboardPage> createState() => _ReceiptsDashboardPageState();
+}
+
+class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
   List<String> drawerItems = [];
   List<ReceiptData> receipts = [];
 
@@ -51,21 +78,32 @@ class _InputData extends State<MyHomePage> {
       drawerItems.add('New Receipt ${drawerItems.length + 1}');
     });
     saveReceipts(receipts);
-  }
-
-  //Core Components
-  @override
-  Widget build(BuildContext context) {
-    
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 182, 25, 25),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => receipt_page.ReceiptPage(
+          title: drawerItems.last,
+          receiptData: receipts.last,
         ),
       ),
-      body: CardListView(),
+    );
+  }
+
+  Widget buildAddReceiptTile() {
+    return ListTile(
+      leading: const Icon(Icons.add),
+      title: const Text('Add Receipt'),
+      onTap: _addReceipt,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+        title: const Text('Receipts', style: TextStyle(color: Colors.white)),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -78,511 +116,84 @@ class _InputData extends State<MyHomePage> {
               ),
             ),
             ...drawerItems.asMap().entries.map((entry) {
-  int index = entry.key;
-  String item = entry.value;
-  return ListTile(
-    title: Text(item),
-    onTap: () {
-      Navigator.pop(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => receipt_page.ReceiptPage(
-        title: drawerItems[index],
-        receiptData: receipts[index], // <-- main.dart
-      ),
-        ),
-      );
-    },
-  );
-}),
-const Divider(),
-ListTile(
-  leading: Icon(Icons.add),
-  title: Text('Add Receipt'),
-  onTap: () {
-    setState(() {
-      drawerItems.add('New Receipt ${drawerItems.length + 1}');
-      receipts.add(ReceiptData());
-    });
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => receipt_page.ReceiptPage(
-          title: drawerItems.last,
-          receiptData: receipts.last,
-        ),
-      ),
-    );
-  },
-),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CardListView extends StatefulWidget {
-  const CardListView({super.key});
-
-  @override
-  _CardListViewState createState() => _CardListViewState();
-}
-
-class _CardListViewState extends State<CardListView> {
-  // List<int> counters = List.generate(3, (index) => 0); old
-  //List<String> Food_Names = ['Regular Pares','Mami Pares','Rice',];
-
-
-//Implement in the future for editing
-List<String> Item_Value = [];
-List<String> Item_Amount = [];
-
-
-  //Dishes:
-  int ParesValue = 60;
-  int ParesRegular_Amount = 0;
-
-  int ParesMamiValue = 50;
-  int ParesMami_Amount = 0;
-
-  int ParesBagnetValue = 75;
-  int ParesBagnet_Amount = 0;
-
-  int ParesOverloadValue = 130;
-  int ParesOverload_Amount = 0;
-
-  int LugawValue = 20;
-  int Lugaw_Amount = 0;
-
-  int LugawspecialValue = 50;
-  int Lugawspecial_Amount = 0;
-
-  //Drinks:
-  int CokeValue = 25;
-  int CokeAmount = 0;
-
-  int SpriteValue = 25;
-  int Spriteamount = 0;
-
-  int MountainDewValue = 25;
-  int MountainDewAmount = 0;
-
-  int RoyalValue = 25;
-  int RoyalAmount = 0;
-
-  int WaterBottlesmallValue = 25;
-  int WaterBottlesmallAmount = 0;
-
-  int WaterBottlelargeValue = 35;
-  int WaterBottlelargeAmount = 0;
-
-  //Extra:
-  int RiceValue = 15;
-  int Rice = 0;
-
-  int eggValue = 15;
-  int eggPrice = 0;
-
-  int TokwaValue = 15;
-  int TokwaPrice = 0;
-
-  //User Money
- TextEditingController userMoneyController = TextEditingController();
-  int User_Money = 0;
-
-int getTotal() {
-  // Dishes
-  int dishesTotal = (ParesValue * ParesRegular_Amount) +
-                    (ParesMamiValue * ParesMami_Amount) +
-                    (ParesBagnetValue * ParesBagnet_Amount) +
-                    (ParesOverloadValue * ParesOverload_Amount) +
-                    (LugawValue * Lugaw_Amount) + (LugawspecialValue * Lugawspecial_Amount);
-
-  // Drinks
-  int drinksTotal = (CokeValue * CokeAmount) +
-                    (SpriteValue * Spriteamount) +
-                    (MountainDewValue * MountainDewAmount) +
-                    (RoyalValue * RoyalAmount) +
-                    (WaterBottlesmallValue * WaterBottlesmallAmount);
-
-  // Extra
-  int extrasTotal = (RiceValue * Rice) + 
-                    (eggValue * eggPrice) +
-                    (TokwaValue * TokwaPrice);
-
-  // Return the sum of everything
-  return dishesTotal + drinksTotal + extrasTotal;
-}
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-         child: ListView(
-  padding: EdgeInsets.all(8),
-  children: [
-    Text("Dishes:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    GridView.count(
-      shrinkWrap: true, // Important: Makes GridView fit inside ListView
-      physics: NeverScrollableScrollPhysics(), // Prevents GridView from scrolling
-      crossAxisCount: 2, // Number of columns
-      childAspectRatio: 3 / 2, // Adjust to match card size
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      children: [
-
-        CardGridWidget(
-          name: 'Pares Regular ($ParesValue)',
-          counter: ParesRegular_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              ParesRegular_Amount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Pares Mami ($ParesMamiValue)',
-          counter: ParesMami_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              ParesMami_Amount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Pares Bagnet ($ParesBagnetValue)',
-          counter: ParesBagnet_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              ParesBagnet_Amount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Pares Overload ($ParesOverloadValue)',
-          counter: ParesOverload_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              ParesOverload_Amount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Lugaw ($LugawValue)',
-          counter: Lugaw_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              Lugaw_Amount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Lugaw Special ($LugawspecialValue)',
-          counter: Lugawspecial_Amount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              Lugawspecial_Amount = newCount;
-            });
-          },
-        ),
-        // Add more dishes as needed
-      ],
-    ),
-
-    SizedBox(height: 16),
-
-
-    Text("Drinks:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    GridView.count(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 3 / 2,
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      children: [
-        CardGridWidget(
-          name: 'Coke (25)',
-          counter: CokeAmount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              CokeAmount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Sprite (25)',
-          counter: Spriteamount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              Spriteamount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Mountain Dew (25)',
-          counter: MountainDewAmount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              MountainDewAmount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Royal (25)',
-          counter: RoyalAmount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              RoyalAmount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Water Bottle small(20)',
-          counter: WaterBottlesmallAmount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              WaterBottlesmallAmount = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Water Bottle large(35)',
-          counter: WaterBottlelargeAmount,
-          onCounterChanged: (newCount) {
-            setState(() {
-              WaterBottlelargeAmount = newCount;
-            });
-          },
-        ),
-        // Add more drinks as needed
-      ],
-    ),
-
-    SizedBox(height: 16),
- 
-    Text("Extra:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    GridView.count(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 3 / 2,
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      children: [
-        CardGridWidget(
-          name: 'Rice ($RiceValue)',
-          counter: Rice,
-          onCounterChanged: (newCount) {
-            setState(() {
-              Rice = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Egg ($eggValue)',
-          counter: eggPrice,
-          onCounterChanged: (newCount) {
-            setState(() {
-              eggPrice = newCount;
-            });
-          },
-        ),
-        CardGridWidget(
-          name: 'Tokwa ($TokwaValue)',
-          counter: TokwaPrice,
-          onCounterChanged: (newCount) {
-            setState(() {
-              TokwaPrice = newCount;
-            });
-          },
-        ),
-      ],
-    ),
-  ],
-),
-        ),
-Text("Total value: ${getTotal()}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
- Column(
-  crossAxisAlignment: CrossAxisAlignment.stretch,
-  children: [
-    Row(
-      children: [
-        
-        // Text Field
-       Expanded(
-  flex: 6,
-  child: Expanded(
-  flex: 12,
-  child: Padding(
-    padding: const EdgeInsets.all(16),
-    child: TextField(
-      controller: userMoneyController,
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly,
-      ],
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'User Money',
-      ),
-      onChanged: (value) {
-        setState(() {
-          User_Money = int.tryParse(value) ?? 0;
-        });
-      },
-    ),
-  ),
-),
- 
-),
-
-        Expanded(
-          flex: 4,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ResultsPage(
-                    // Dishes
-                    ParesValue: ParesValue,
-                    ParesRegular_Amount: ParesRegular_Amount,
-                    ParesMamiValue: ParesMamiValue,
-                    ParesMami_Amount: ParesMami_Amount,
-                    ParesBagnetValue: ParesBagnetValue,
-                    ParesBagnet_Amount: ParesBagnet_Amount,
-                    ParesOverloadValue: ParesOverloadValue,
-                    ParesOverload_Amount: ParesOverload_Amount,
-                    LugawValue: LugawValue,
-                    Lugaw_Amount: Lugaw_Amount,
-                    LugawspecialValue: LugawspecialValue,
-                    Lugawspecial_Amount: Lugawspecial_Amount,
-
-                    // Drinks
-                    CokeValue: CokeValue,
-                    CokeAmount: CokeAmount,
-                    SpriteValue: SpriteValue,
-                    SpriteAmount: Spriteamount,
-                    MountainDewValue: MountainDewValue,
-                    MountainDewAmount: MountainDewAmount,
-                    RoyalValue: RoyalValue,
-                    RoyalAmount: RoyalAmount,
-                    WaterBottlesmallValue: WaterBottlesmallValue,
-                    WaterBottlesmallAmount: WaterBottlesmallAmount,
-                    WaterBottlelargeValue: WaterBottlelargeValue,
-                    WaterBottlelargeAmount: WaterBottlelargeAmount,
-
-                    // Extra
-                    RiceValue: RiceValue,
-                    Rice: Rice,
-
-                    eggValue: eggValue,
-                    eggPrice: eggPrice,
-                    
-                    TokwaValue: TokwaValue,
-                    TokwaPrice: TokwaPrice,
-
-                    // User Money 
-                    Money: User_Money
-                  ),
-                ),
+              int index = entry.key;
+              String item = entry.value;
+              return ListTile(
+                title: Text(item),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => receipt_page.ReceiptPage(
+                        title: drawerItems[index],
+                        receiptData: receipts[index],
+                      ),
+                    ),
+                  );
+                },
               );
-            },
-            child: Text("Results"),
-          ),
-        ),
-
-        SizedBox(width: 8),
-
-      ],
-    ),
-  ],
-),
-
-      ],
-    );
-  }
-  
-}
-
-
-class CardGridWidget extends StatelessWidget {
-  final String name;
-  final int counter;
-  final ValueChanged<int> onCounterChanged;
-
-  const CardGridWidget({
-    super.key,
-    required this.name,
-    required this.counter,
-    required this.onCounterChanged,
-  });
-
-  
-// Card format
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 400;
-
-
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isSmallScreen ? 8 : 16, 
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              name,
-              style: TextStyle(
-                fontSize: isSmallScreen ? 14 : 18,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-              softWrap: true,
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  iconSize: isSmallScreen ? 18 : 24,
-                  onPressed: () {
-                    if (counter > 0) onCounterChanged(counter - 1);
-                  },
-                ),
-                Text(
-                  '$counter',
-                  style: TextStyle(fontSize: isSmallScreen ? 14 : 18),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  iconSize: isSmallScreen ? 18 : 24,
-                  onPressed: () {
-                    onCounterChanged(counter + 1);
-                  },
-                ),
-              ],
-            ),
+            }),
+            const Divider(),
+            buildAddReceiptTile(),
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text('Add Receipt'),
+              onPressed: _addReceipt,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ),
+          Expanded(
+            child: receipts.isEmpty
+                ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
+                : ListView.builder(
+                    itemCount: receipts.length,
+                    itemBuilder: (context, index) {
+                      final receipt = receipts[index];
+                      return ListTile(
+                        title: Text(drawerItems[index]),
+                        subtitle: Text('Total: ${receipt.getTotal()}'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => receipt_page.ReceiptPage(
+                                title: drawerItems[index],
+                                receiptData: receipts[index],
+                              ),
+                            ),
+                          );
+                        },
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          tooltip: 'Delete Receipt',
+                          onPressed: () {
+                            setState(() {
+                              receipts.removeAt(index);
+                              drawerItems.removeAt(index);
+                            });
+                            saveReceipts(receipts);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
 }
-
-
-List<ReceiptData> receipts = [];
 
 
 
