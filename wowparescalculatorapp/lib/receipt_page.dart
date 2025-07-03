@@ -98,7 +98,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       onCounterChanged: (newCount) {
                         setState(() {
                           d.paresBagnetAmount = newCount;
-                        });
+                        }); 
                       },
                     ),
                     CardGridWidget(

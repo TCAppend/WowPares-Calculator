@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wowparescalculatorapp/receipt_page.dart';
+import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
 import 'results_page.dart';
 import 'package:flutter/services.dart';
 import 'package:wowparescalculatorapp/receipt.dart';
@@ -32,11 +32,25 @@ class MyHomePage extends StatefulWidget {
 
 class _InputData extends State<MyHomePage> {
   List<String> drawerItems = [];
+  List<ReceiptData> receipts = [];
 
-  void _addDrawerItem() {
-    setState(() {
-      drawerItems.add('New Recipt ${drawerItems.length + 1}');
+  @override
+  void initState() {
+    super.initState();
+    loadReceipts().then((loadedReceipts) {
+      setState(() {
+        receipts = loadedReceipts;
+        drawerItems = List.generate(receipts.length, (i) => 'New Receipt ${i + 1}');
+      });
     });
+  }
+
+  void _addReceipt() {
+    setState(() {
+      receipts.add(ReceiptData());
+      drawerItems.add('New Receipt ${drawerItems.length + 1}');
+    });
+    saveReceipts(receipts);
   }
 
   //Core Components
@@ -73,10 +87,10 @@ class _InputData extends State<MyHomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ReceiptPage(
-            title: item,
-            receiptData: receipts[index],
-          ),
+          builder: (context) => receipt_page.ReceiptPage(
+        title: drawerItems[index],
+        receiptData: receipts[index], // <-- main.dart
+      ),
         ),
       );
     },
@@ -85,17 +99,17 @@ class _InputData extends State<MyHomePage> {
 const Divider(),
 ListTile(
   leading: Icon(Icons.add),
-  title: Text('Add Recipt'),
+  title: Text('Add Receipt'),
   onTap: () {
     setState(() {
-      drawerItems.add('New Recipt ${drawerItems.length + 1}');
+      drawerItems.add('New Receipt ${drawerItems.length + 1}');
       receipts.add(ReceiptData());
     });
     Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReceiptPage(
+        builder: (context) => receipt_page.ReceiptPage(
           title: drawerItems.last,
           receiptData: receipts.last,
         ),
