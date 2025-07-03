@@ -32,11 +32,25 @@ class MyHomePage extends StatefulWidget {
 
 class _InputData extends State<MyHomePage> {
   List<String> drawerItems = [];
+  List<ReceiptData> receipts = [];
 
-  void _addDrawerItem() {
+  @override
+  void initState() {
+    super.initState();
+    loadReceipts().then((loadedReceipts) {
+      setState(() {
+        receipts = loadedReceipts;
+        drawerItems = List.generate(receipts.length, (i) => 'New Receipt ${i + 1}');
+      });
+    });
+  }
+
+  void _addReceipt() {
     setState(() {
+      receipts.add(ReceiptData());
       drawerItems.add('New Receipt ${drawerItems.length + 1}');
     });
+    saveReceipts(receipts);
   }
 
   //Core Components
@@ -74,9 +88,9 @@ class _InputData extends State<MyHomePage> {
         context,
         MaterialPageRoute(
           builder: (context) => receipt_page.ReceiptPage(
-              title: item,
-              receiptData: receipts[index],
-            ),
+        title: drawerItems[index],
+        receiptData: receipts[index], // <-- main.dart
+      ),
         ),
       );
     },

@@ -129,7 +129,7 @@ class ReceiptData {
 Future<void> saveReceipts(List<ReceiptData> receipts) async {
   final prefs = await SharedPreferences.getInstance();
   final jsonList = receipts.map((r) => r.toJson()).toList();
-  prefs.setString('receipts', jsonEncode(jsonList));
+  await prefs.setString('receipts', jsonEncode(jsonList));
 }
 
 // Load receipts
