@@ -142,6 +142,8 @@ Future<List<ReceiptData>> loadReceipts() async {
 }
 
 class ReceiptPage extends StatefulWidget {
+  const ReceiptPage({super.key});
+
   @override
   _ReceiptPageState createState() => _ReceiptPageState();
 }
