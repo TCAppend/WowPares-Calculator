@@ -66,6 +66,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
               padding: const EdgeInsets.all(8),
               children: [
                 const Text("Dishes:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+
                 ConstrainedBox(
                   constraints: const BoxConstraints(
                   maxHeight: 180, 
@@ -80,6 +81,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       },
                     ),              
                 ),
+                
                 CardGridWidget(
                       name: 'Pares Mami (50)',
                       counter: d.paresMamiAmount,
@@ -125,16 +127,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         });
                       },
                     ),
+                    
                 const SizedBox(height: 16),
                 const Text("Drinks:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  children: [
+                    
                     CardGridWidget(
                       name: 'Coke (25)',
                       counter: d.cokeAmount,
@@ -189,18 +185,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         });
                       },
                     ),
-                  ],
-                ),
+
                 const SizedBox(height: 16),
                 const Text("Extra:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  children: [
+              
                     CardGridWidget(
                       name: 'Rice (15)',
                       counter: d.rice,
@@ -228,8 +216,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         });
                       },
                     ),
-                  ],
-                ),
+                  
+      
               ],
             ),
           ),
@@ -319,77 +307,86 @@ class _ReceiptPageState extends State<ReceiptPage> {
   }
 }
 
-// CardGridWidget:
 class CardGridWidget extends StatelessWidget {
   final String name;
   final int counter;
   final ValueChanged<int> onCounterChanged;
-  final String? imageAsset; // variable for image path
+  final String? imageAsset;
 
   const CardGridWidget({
     super.key,
     required this.name,
     required this.counter,
     required this.onCounterChanged,
-    this.imageAsset, // Optional image asset path, defaults to null lol
+    this.imageAsset,
   });
 
- @override
-Widget build(BuildContext context) {
-  final screenWidth = MediaQuery.of(context).size.width;
-  final isSmallScreen = screenWidth < 400;
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 400;
 
-  return Card(
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10),
-  ),
-  child: Padding(
-    padding: EdgeInsets.symmetric(
-      horizontal: isSmallScreen ? 8 : 16,
-      vertical: 12,
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min, 
-
-      children: [
-        Text(
-          name,
-          style: TextStyle(
-            fontSize: isSmallScreen ? 20 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-          softWrap: true,
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isSmallScreen ? 8 : 16,
+          vertical: 12,
         ),
-        
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: const Icon(Icons.remove),
-              iconSize: isSmallScreen ? 18 : 24,
-              onPressed: () {
-                if (counter > 0) onCounterChanged(counter - 1);
-              },
-            ),
+            // Show image if provided
+            if (imageAsset != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Image.asset(
+                  imageAsset!,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
             Text(
-              '$counter',
-              style: TextStyle(fontSize: isSmallScreen ? 14 : 18),
+              name,
+              style: TextStyle(
+                fontSize: isSmallScreen ? 20 : 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+              softWrap: true,
             ),
-            IconButton(
-              icon: const Icon(Icons.add),
-              iconSize: isSmallScreen ? 18 : 24,
-              onPressed: () {
-                onCounterChanged(counter + 1);
-              },
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  iconSize: isSmallScreen ? 18 : 24,
+                  onPressed: () {
+                    if (counter > 0) onCounterChanged(counter - 1);
+                  },
+                ),
+                Text(
+                  '$counter',
+                  style: TextStyle(fontSize: isSmallScreen ? 14 : 18),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  iconSize: isSmallScreen ? 18 : 24,
+                  onPressed: () {
+                    onCounterChanged(counter + 1);
+                  },
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  ),
-);
+      ),
+    );
+  }
 }
 
-}
