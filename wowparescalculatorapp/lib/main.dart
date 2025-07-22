@@ -66,22 +66,16 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
   List<String> drawerItems = [];
   List<ReceiptData> receipts = [];
 
-  @override
-  void initState() {
-    super.initState();
-    loadReceipts().then((loadedReceipts) {
-      setState(() {
-        receipts = loadedReceipts;
-        drawerItems = List.generate(receipts.length, (i) => 'New Receipt ${i + 1}');
-      });
-    });
-  }
-
-  void _addReceipt() {
+  // Separate function for adding receipt
+  void _addNewReceipt() {
     setState(() {
       receipts.add(ReceiptData());
       drawerItems.add('New Receipt ${drawerItems.length + 1}');
     });
+  }
+
+  // Separate function for saving receipt
+  void _saveAndNavigate() {
     saveReceipts(receipts);
     Navigator.push(
       context,
@@ -92,6 +86,12 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
         ),
       ),
     );
+  }
+
+  // Combined function that calls both
+  void _addReceipt() {
+    _addNewReceipt();
+    _saveAndNavigate();
   }
 
   Widget Navigatetodashboard() {
