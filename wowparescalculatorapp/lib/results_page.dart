@@ -118,51 +118,83 @@ class ResultsPage extends StatelessWidget {
         (RiceValue * Rice) + (eggValue * eggPrice) +
         (TokwaValue * TokwaPrice);
 
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Results'),
         backgroundColor: const Color.fromARGB(255, 182, 25, 25),
       ),
-      body: Padding(
+      body: 
+      Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            if (ParesRegular_Amount > 0)
-              Text('Pares Regular: $ParesRegular_Amount x $ParesValue'),
-            if (ParesMami_Amount > 0)
-              Text('Pares Mami: $ParesMami_Amount x $ParesMamiValue'),
-            if (ParesBagnet_Amount > 0)
-              Text('Pares Bagnet: $ParesBagnet_Amount x $ParesBagnetValue'),
-            if (ParesOverload_Amount > 0)
-              Text('Pares Overload: $ParesOverload_Amount x $ParesOverloadValue'),
-            if (Lugaw_Amount > 0)
-              Text('Lugaw: $Lugaw_Amount x $LugawValue'),
-            if (Lugawspecial_Amount > 0)
-              Text('Lugaw Special: $Lugawspecial_Amount x $LugawspecialValue'),
-            if (CokeAmount > 0)
-              Text('Coke: $CokeAmount x $CokeValue'),
-            if (SpriteAmount > 0)
-              Text('Sprite: $SpriteAmount x $SpriteValue'),
-            if (MountainDewAmount > 0)
-              Text('Mountain Dew: $MountainDewAmount x $MountainDewValue'),
-            if (RoyalAmount > 0)
-              Text('Royal: $RoyalAmount x $RoyalValue'),
-            if (WaterBottlesmallAmount > 0)
-              Text('Water Bottle Small: $WaterBottlesmallAmount x $WaterBottlesmallValue'),
-              if (WaterBottlelargeAmount > 0)
-              Text('Water Bottle Large: $WaterBottlelargeAmount x $WaterBottlelargeValue'),
-            if (Rice > 0)
-              Text('Rice: $Rice x $RiceValue'),
-            if (eggPrice > 0)
-              Text('Egg: $eggPrice x $eggValue'), 
-            if (TokwaPrice > 0)
-              Text('Tokwa: $TokwaPrice x $TokwaValue'),
-            const SizedBox(height: 16),
-            Text('Total: $total', style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Text('User Money: $Money'),
-            Text('Change: ${Money - total}'),
-          ],
+        child: Align(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                      'Receipt',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+                Column(
+                  children: [
+                    if (ParesRegular_Amount > 0)
+                      Text('Pares Regular: $ParesRegular_Amount x $ParesValue', style: const TextStyle(fontSize: 25)),
+                    if (ParesMami_Amount > 0)
+                      Text('Pares Mami: $ParesMami_Amount x $ParesMamiValue', style: const TextStyle(fontSize: 25)),
+                    if (ParesBagnet_Amount > 0)
+                      Text('Pares Bagnet: $ParesBagnet_Amount x $ParesBagnetValue', style: const TextStyle(fontSize: 25)),
+                    if (ParesOverload_Amount > 0)
+                      Text('Pares Overload: $ParesOverload_Amount x $ParesOverloadValue', style: const TextStyle(fontSize: 25)),
+                    if (Lugaw_Amount > 0)
+                      Text('Lugaw: $Lugaw_Amount x $LugawValue', style: const TextStyle(fontSize: 25)),
+                    if (Lugawspecial_Amount > 0)
+                      Text('Lugaw Special: $Lugawspecial_Amount x $LugawspecialValue', style: const TextStyle(fontSize: 25)),
+                    if (CokeAmount > 0)
+                      Text('Coke: $CokeAmount x $CokeValue', style: const TextStyle(fontSize: 25)),
+                    if (SpriteAmount > 0)
+                      Text('Sprite: $SpriteAmount x $SpriteValue', style: const TextStyle(fontSize: 25)),
+                    if (MountainDewAmount > 0)
+                      Text('Mountain Dew: $MountainDewAmount x $MountainDewValue', style: const TextStyle(fontSize: 25)),
+                    if (RoyalAmount > 0)
+                      Text('Royal: $RoyalAmount x $RoyalValue', style: const TextStyle(fontSize: 25)),
+                    if (WaterBottlesmallAmount > 0)
+                      Text('Water Bottle Small: $WaterBottlesmallAmount x $WaterBottlesmallValue', style: const TextStyle(fontSize: 25)),
+                    if (WaterBottlelargeAmount > 0)
+                      Text('Water Bottle Large: $WaterBottlelargeAmount x $WaterBottlelargeValue', style: const TextStyle(fontSize: 25)),
+                    if (Rice > 0)
+                      Text('Rice: $Rice x $RiceValue', style: const TextStyle(fontSize: 25)),
+                    if (eggPrice > 0)
+                      Text('Egg: $eggPrice x $eggValue', style: const TextStyle(fontSize: 25)), 
+                    if (TokwaPrice > 0)
+                      Text('Tokwa: $TokwaPrice x $TokwaValue', style: const TextStyle(fontSize: 25)),
+                    const SizedBox(height: 16),
+
+                    const Divider(thickness: 2, color: Colors.black),
+                    Text('Total: $total', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                    
+
+                    const Divider(thickness: 2, color: Colors.black),
+                    Text('User Money: $Money', style: const TextStyle(fontSize: 23)),
+                    Text('Change: ${Money - total}', style: const TextStyle(fontSize: 23)),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

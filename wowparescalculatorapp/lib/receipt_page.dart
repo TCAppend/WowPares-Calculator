@@ -66,31 +66,29 @@ class _ReceiptPageState extends State<ReceiptPage> {
               padding: const EdgeInsets.all(8),
               children: [
                 const Text("Dishes:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                  maxHeight: 180, 
-                  ),
-                  child: CardGridWidget(
-                      name: 'Pares Regular (60)',
-                      counter: d.paresRegularAmount,
-                      onCounterChanged: (newCount) {
-                        setState(() {
-                          d.paresRegularAmount = newCount;
-                        });
-                      },
-                    ),              
+                 
+                CardGridWidget(
+                  name: 'Pares Regular (60)',
+                  counter: d.paresRegularAmount,
+                  onCounterChanged: (newCount) {
+                  setState(() {
+                    d.paresRegularAmount = newCount;
+                  });
+                  },
+                  imageAsset: 'assets/images/Regular_pares.png',
                 ),
                 
                 CardGridWidget(
-                      name: 'Pares Mami (50)',
-                      counter: d.paresMamiAmount,
-                      onCounterChanged: (newCount) {
-                        setState(() {
-                          d.paresMamiAmount = newCount;
-                        });
-                      },
-                    ),
+                  name: 'Pares Mami (50)',
+                  counter: d.paresMamiAmount,
+                  onCounterChanged: (newCount) {
+                  setState(() {
+                    d.paresMamiAmount = newCount;
+                  });
+                  },
+                  imageAsset: 'assets/images/Pares_Mami.png',
+                ),
+
                     CardGridWidget(
                       name: 'Pares Bagnet (75)',
                       counter: d.paresBagnetAmount,
@@ -99,6 +97,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.paresBagnetAmount = newCount;
                         }); 
                       },
+                      imageAsset: 'assets/images/Pares_bagnet.png',
                     ),
                     CardGridWidget(
                       name: 'Pares Overload (130)',
@@ -108,6 +107,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.paresOverloadAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Pares_overload.png',
                     ),
                     CardGridWidget(
                       name: 'Lugaw (20)',
@@ -117,6 +117,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.lugawAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Plain_lugaw.png',
                     ),
                     CardGridWidget(
                       name: 'Lugaw Special (50)',
@@ -126,6 +127,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.lugawSpecialAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Special_lugaw.png',
                     ),
                     
                 const SizedBox(height: 16),
@@ -139,6 +141,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.cokeAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Coke_regular.png',
                     ),
                     CardGridWidget(
                       name: 'Sprite (25)',
@@ -148,6 +151,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.spriteAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Sprite_regular.png',
                     ),
                     CardGridWidget(
                       name: 'Mountain Dew (25)',
@@ -157,6 +161,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.mountainDewAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/mountain_dew_regular.png',
                     ),
                     CardGridWidget(
                       name: 'Royal (25)',
@@ -166,6 +171,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.royalAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Royal_regular.png',
                     ),
                     CardGridWidget(
                       name: 'Water Bottle small(25)',
@@ -175,6 +181,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.waterBottleSmallAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Water_small.png',
                     ),
                     CardGridWidget(
                       name: 'Water Bottle large(35)',
@@ -184,6 +191,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.waterBottleLargeAmount = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Water_large.png',
                     ),
 
                 const SizedBox(height: 16),
@@ -197,6 +205,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.rice = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Plain_Rice.png',
                     ),
                     CardGridWidget(
                       name: 'Egg (15)',
@@ -206,6 +215,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.egg = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Boild_egg.png',
                     ),
                     CardGridWidget(
                       name: 'Tokwa (15)',
@@ -215,6 +225,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           d.tokwa = newCount;
                         });
                       },
+                      imageAsset: 'assets/images/Tokwa.png',
                     ),
                   
       
