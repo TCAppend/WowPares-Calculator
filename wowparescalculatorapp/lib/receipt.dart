@@ -46,7 +46,23 @@ class ReceiptData {
     this.userMoney = 0,
   });
 
-  getTotal() {}
+  int getTotal() {
+    return (60 * paresRegularAmount) +
+        (50 * paresMamiAmount) +
+        (75 * paresBagnetAmount) +
+        (130 * paresOverloadAmount) +
+        (20 * lugawAmount) +
+        (50 * lugawSpecialAmount) +
+        (25 * cokeAmount) +
+        (25 * spriteAmount) +
+        (25 * mountainDewAmount) +
+        (25 * royalAmount) +
+        (25 * waterBottleSmallAmount) +
+        (35 * waterBottleLargeAmount) +
+        (15 * rice) +
+        (15 * egg) +
+        (15 * tokwa);
+  }
 
   ReceiptData copyWith({
     int? paresRegularAmount,

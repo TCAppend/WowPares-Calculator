@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
 import 'package:wowparescalculatorapp/receipt.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance(); // Store the instance
+  if (!prefs.containsKey('receipts')) { // Initialize if empty
+    await prefs.setString('receipts', '[]');
+  }
   runApp(const MyApp());
 }
 
@@ -166,16 +172,19 @@ title: const Text('Receipts'),
                         title: Text(drawerItems[index]),
                         subtitle: Text('Total: ${receipt.getTotal()}'),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => receipt_page.ReceiptPage(
-                                title: drawerItems[index],
-                                receiptData: receipts[index],
-                              ),
-                            ),
-                          );
-                        },
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => receipt_page.ReceiptPage(
+                title: drawerItems[index],
+                receiptData: receipts[index],
+            ),
+        ),
+    ).then((_) {
+        saveReceipts(receipts); // Save receipts
+        setState(() {}); // Add this line to trigger rebuild
+    });
+},
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           tooltip: 'Delete Receipt',
