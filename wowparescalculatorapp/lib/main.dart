@@ -48,8 +48,7 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-// This is your new receipts dashboard page.
-// Move your old _InputData and receipt list logic here!
+//dashboard page 
 class ReceiptsDashboardPage extends StatefulWidget {
   const ReceiptsDashboardPage({super.key});
 
@@ -89,12 +88,34 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
     );
   }
 
-  Widget buildAddReceiptTile() {
+  Widget Navigatetodashboard() {
     return ListTile(
-      leading: const Icon(Icons.add),
-      title: const Text('Add Receipt'),
-      onTap: _addReceipt,
+      title: const Text('Dashboard'),
+      onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const WelcomePage(),
+              ),
+            );
+          },
     );
+    
+  }
+
+Widget NavigateReceipt() {
+    return ListTile( 
+title: const Text('Receipts'),
+      onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReceiptsDashboardPage(),
+              ),
+            );
+          },
+    );
+    
   }
 
   @override
@@ -115,27 +136,8 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            ...drawerItems.asMap().entries.map((entry) {
-              int index = entry.key;
-              String item = entry.value;
-              return ListTile(
-                title: Text(item),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => receipt_page.ReceiptPage(
-                        title: drawerItems[index],
-                        receiptData: receipts[index],
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
-            const Divider(),
-            buildAddReceiptTile(),
+            Navigatetodashboard(),
+            NavigateReceipt(),
           ],
         ),
       ),
