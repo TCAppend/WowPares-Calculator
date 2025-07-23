@@ -143,18 +143,35 @@ class ReceiptData {
 
 // Save receipts
 Future<void> saveReceipts(List<ReceiptData> receipts) async {
-  final prefs = await SharedPreferences.getInstance();
-  final jsonList = receipts.map((r) => r.toJson()).toList();
-  await prefs.setString('receipts', jsonEncode(jsonList));
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = receipts.map((r) => r.toJson()).toList();
+    final String jsonString = jsonEncode(jsonList);
+    final bool success = await prefs.setString('receipts', jsonString);
+    
+    if (!success) {
+      debugPrint('Warning: Failed to save receipts');
+    }
+  } catch (e) {
+    debugPrint('Error saving receipts: $e');
+    rethrow; // Re-throw the error so the UI can handle it
+  }
 }
 
 // Load receipts
 Future<List<ReceiptData>> loadReceipts() async {
-  final prefs = await SharedPreferences.getInstance();
-  final jsonString = prefs.getString('receipts');
-  if (jsonString == null) return [];
-  final List<dynamic> jsonList = jsonDecode(jsonString);
-  return jsonList.map((json) => ReceiptData.fromJson(json)).toList();
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('receipts');
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
+    final List<dynamic> jsonList = jsonDecode(jsonString);
+    return jsonList.map((json) => ReceiptData.fromJson(json)).toList();
+  } catch (e) {
+    debugPrint('Error loading receipts: $e');
+    return [];
+  }
 }
 
 class ReceiptPage extends StatefulWidget {

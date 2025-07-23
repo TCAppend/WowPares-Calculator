@@ -41,7 +41,7 @@ class WelcomePage extends StatelessWidget {
           icon: const Icon(Icons.receipt_long),
           label: const Text('Go to Receipts'),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(  // Change this line from push to pushReplacement
               context,
               MaterialPageRoute(
                 builder: (context) => const ReceiptsDashboardPage(),
@@ -65,6 +65,18 @@ class ReceiptsDashboardPage extends StatefulWidget {
 class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
   List<String> drawerItems = [];
   List<ReceiptData> receipts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadReceipts().then((loadedReceipts) {
+      setState(() {
+        receipts = loadedReceipts;
+        drawerItems = List.generate(
+            loadedReceipts.length, (i) => 'New Receipt ${i + 1}');
+      });
+    });
+  }
 
   // Separate function for adding receipt
   void _addNewReceipt() {
@@ -111,15 +123,10 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
 
 Widget NavigateReceipt() {
     return ListTile( 
-title: const Text('Receipts'),
+      title: const Text('Receipts'),
       onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ReceiptsDashboardPage(),
-              ),
-            );
-          },
+        Navigator.pop(context); // This will just close the drawer
+      },
     );
     
   }
