@@ -92,6 +92,12 @@ class ResultsPage extends StatelessWidget {
 
 
 
+  
+
+
+
+
+
    @override
 Widget build(BuildContext context) {
   final int total = 
@@ -117,7 +123,7 @@ Widget build(BuildContext context) {
 
   
   addItem("Regular Pares", ParesValue * ParesRegular_Amount);
-  addItem("Mami Pares", ParesMamiValue * ParesMami_Amount);
+  addItem("Mami Pares Special", ParesMamiValue * ParesMami_Amount);
   addItem("Bagnet Pares", ParesBagnetValue * ParesBagnet_Amount);
   addItem("Overload Pares", ParesOverloadValue * ParesOverload_Amount);
   addItem("Lugaw", LugawValue * Lugaw_Amount);
