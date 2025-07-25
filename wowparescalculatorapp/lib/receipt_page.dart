@@ -32,15 +32,15 @@ class _ReceiptPageState extends State<ReceiptPage> {
     final d = widget.receiptData;
     int dishesTotal = (60 * d.paresRegularAmount) +
         (50 * d.paresMamiAmount) +
-        (75 * d.paresBagnetAmount) +
+        (80 * d.paresBagnetAmount) +
         (130 * d.paresOverloadAmount) +
         (20 * d.lugawAmount) +
         (50 * d.lugawSpecialAmount);
 
     int drinksTotal = (25 * d.cokeAmount) +
-        (25 * d.spriteAmount) +
-        (25 * d.mountainDewAmount) +
-        (25 * d.royalAmount) +
+        (15 * d.spriteAmount) +
+        (15 * d.mountainDewAmount) +
+        (15 * d.royalAmount) +
         (25 * d.waterBottleSmallAmount) + 
         (35 * d.waterBottleLargeAmount);
 
@@ -79,7 +79,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 ),
                 
                 CardGridWidget(
-                  name: 'Pares Mami (50)',
+                  name: 'Pares Mami Special (50)',
                   counter: d.paresMamiAmount,
                   onCounterChanged: (newCount) {
                   setState(() {
@@ -90,7 +90,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 ),
 
                     CardGridWidget(
-                      name: 'Pares Bagnet (75)',
+                      name: 'Pares Bagnet (80)',
                       counter: d.paresBagnetAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -134,7 +134,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 const Text("Drinks:", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     
                     CardGridWidget(
-                      name: 'Coke (25)',
+                      name: 'Coke (15)',
                       counter: d.cokeAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -144,7 +144,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       imageAsset: 'assets/images/Coke_regular.png',
                     ),
                     CardGridWidget(
-                      name: 'Sprite (25)',
+                      name: 'Sprite (15)',
                       counter: d.spriteAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -154,7 +154,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       imageAsset: 'assets/images/Sprite_regular.png',
                     ),
                     CardGridWidget(
-                      name: 'Mountain Dew (25)',
+                      name: 'Mountain Dew (15)',
                       counter: d.mountainDewAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -164,7 +164,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       imageAsset: 'assets/images/mountain_dew_regular.png',
                     ),
                     CardGridWidget(
-                      name: 'Royal (25)',
+                      name: 'Royal (15)',
                       counter: d.royalAmount,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -208,7 +208,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       imageAsset: 'assets/images/Plain_Rice.png',
                     ),
                     CardGridWidget(
-                      name: 'Egg (15)',
+                      name: 'Boiled Egg (15)',
                       counter: d.egg,
                       onCounterChanged: (newCount) {
                         setState(() {
@@ -272,21 +272,21 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               ParesRegular_Amount: d.paresRegularAmount,
                               ParesMamiValue: 50,
                               ParesMami_Amount: d.paresMamiAmount,
-                              ParesBagnetValue: 75,
+                              ParesBagnetValue: 80,
                               ParesBagnet_Amount: d.paresBagnetAmount,
                               ParesOverloadValue: 130,
                               ParesOverload_Amount: d.paresOverloadAmount,
                               LugawValue: 20,
                               Lugaw_Amount: d.lugawAmount,
-                              LugawspecialValue: 50, // Assuming same value as regular Lugaw
+                              LugawspecialValue: 50, 
                               Lugawspecial_Amount: d.lugawSpecialAmount,
-                              CokeValue: 25,
+                              CokeValue: 15,
                               CokeAmount: d.cokeAmount,
-                              SpriteValue: 25,
+                              SpriteValue: 15,
                               SpriteAmount: d.spriteAmount,
-                              MountainDewValue: 25,
+                              MountainDewValue: 15,
                               MountainDewAmount: d.mountainDewAmount,
-                              RoyalValue: 25,
+                              RoyalValue: 15,
                               RoyalAmount: d.royalAmount,
                               WaterBottlesmallValue: 25,
                               WaterBottlesmallAmount: d.waterBottleSmallAmount,

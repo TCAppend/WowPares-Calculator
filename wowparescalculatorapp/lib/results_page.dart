@@ -154,7 +154,7 @@ class ResultsPage extends StatelessWidget {
                     if (ParesRegular_Amount > 0)
                       Text('Pares Regular: $ParesRegular_Amount x $ParesValue', style: const TextStyle(fontSize: 25)),
                     if (ParesMami_Amount > 0)
-                      Text('Pares Mami: $ParesMami_Amount x $ParesMamiValue', style: const TextStyle(fontSize: 25)),
+                      Text('Pares Mami Special: $ParesMami_Amount x $ParesMamiValue', style: const TextStyle(fontSize: 25)),
                     if (ParesBagnet_Amount > 0)
                       Text('Pares Bagnet: $ParesBagnet_Amount x $ParesBagnetValue', style: const TextStyle(fontSize: 25)),
                     if (ParesOverload_Amount > 0)
@@ -178,7 +178,7 @@ class ResultsPage extends StatelessWidget {
                     if (Rice > 0)
                       Text('Rice: $Rice x $RiceValue', style: const TextStyle(fontSize: 25)),
                     if (eggPrice > 0)
-                      Text('Egg: $eggPrice x $eggValue', style: const TextStyle(fontSize: 25)), 
+                      Text('Boiled Egg: $eggPrice x $eggValue', style: const TextStyle(fontSize: 25)), 
                     if (TokwaPrice > 0)
                       Text('Tokwa: $TokwaPrice x $TokwaValue', style: const TextStyle(fontSize: 25)),
                     const SizedBox(height: 16),

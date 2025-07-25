@@ -49,14 +49,14 @@ class ReceiptData {
   int getTotal() {
     return (60 * paresRegularAmount) +
         (50 * paresMamiAmount) +
-        (75 * paresBagnetAmount) +
+        (80 * paresBagnetAmount) +
         (130 * paresOverloadAmount) +
         (20 * lugawAmount) +
         (50 * lugawSpecialAmount) +
-        (25 * cokeAmount) +
-        (25 * spriteAmount) +
-        (25 * mountainDewAmount) +
-        (25 * royalAmount) +
+        (15 * cokeAmount) +
+        (15 * spriteAmount) +
+        (15 * mountainDewAmount) +
+        (15 * royalAmount) +
         (25 * waterBottleSmallAmount) +
         (35 * waterBottleLargeAmount) +
         (15 * rice) +
