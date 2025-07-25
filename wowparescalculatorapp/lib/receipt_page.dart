@@ -37,7 +37,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
         (20 * d.lugawAmount) +
         (50 * d.lugawSpecialAmount);
 
-    int drinksTotal = (25 * d.cokeAmount) +
+    int drinksTotal = (15 * d.cokeAmount) +
         (15 * d.spriteAmount) +
         (15 * d.mountainDewAmount) +
         (15 * d.royalAmount) +
@@ -238,10 +238,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
             children: [
               Row(
                 children: [
+                  Text("User Money: ", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                   Expanded(
                     flex: 6,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(10),
                       child: TextField(
                         controller: userMoneyController,
                         keyboardType: TextInputType.number,
