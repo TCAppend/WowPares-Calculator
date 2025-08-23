@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
 import 'package:wowparescalculatorapp/receipt.dart';
+import 'package:wowparescalculatorapp/bottombar.dart' as bottom_bar;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,7 +10,9 @@ void main() async {
   if (!prefs.containsKey('receipts')) { // Initialize if empty
     await prefs.setString('receipts', '[]');
   }
+  
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +24,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 182, 25, 25)),
       ),
-      home: const WelcomePage(),
+      home: (const WelcomePage()),
+      //home: const WelcomePage(),
+      debugShowCheckedModeBanner: false,  
     );
   }
 }
@@ -45,6 +50,7 @@ class WelcomePage extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => const ReceiptsDashboardPage(),
+                
               ),
             );
           },
@@ -215,7 +221,5 @@ Widget NavigateReceipt() {
     );
   }
 }
-
-
 
 
