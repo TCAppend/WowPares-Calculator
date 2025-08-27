@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Add this import
 
 class ResultsPage extends StatelessWidget {
   final int ParesValue;
@@ -103,6 +104,11 @@ class ResultsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get current date and time
+    final now = DateTime.now();
+    final dateFormat = DateFormat('MM/dd/yyyy');
+    final timeFormat = DateFormat('hh:mm a');
+    
     int total = (ParesValue * ParesRegular_Amount) +
         (ParesMamiValue * ParesMami_Amount) +
         (ParesBagnetValue * ParesBagnet_Amount) +
@@ -125,8 +131,7 @@ class ResultsPage extends StatelessWidget {
         title: const Text('Results'),
         backgroundColor: const Color.fromARGB(255, 182, 25, 25),
       ),
-      body: 
-      Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16),
         child: Align(
           alignment: Alignment.center,
@@ -144,6 +149,27 @@ class ResultsPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
+                      ),
+                    ),
+                    // date and time here
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Date: ${dateFormat.format(now)}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Time: ${timeFormat.format(now)}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),

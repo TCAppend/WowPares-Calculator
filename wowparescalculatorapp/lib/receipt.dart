@@ -27,6 +27,10 @@ class ReceiptData {
   // User Money
   int userMoney;
 
+  // Add this new field
+  final DateTime createdAt;
+  bool isCompleted;
+
   ReceiptData({
     this.paresRegularAmount = 0,
     this.paresMamiAmount = 0,
@@ -44,7 +48,10 @@ class ReceiptData {
     this.egg = 0,
     this.tokwa = 0,
     this.userMoney = 0,
-  });
+    DateTime? createdAt,
+    bool? isCompleted,  // Change this parameter
+  }) : createdAt = createdAt ?? DateTime.now(),
+       isCompleted = isCompleted ?? false;  // Initialize with provided value or false
 
   int getTotal() {
     return (60 * paresRegularAmount) +
@@ -98,11 +105,13 @@ class ReceiptData {
       waterBottleLargeAmount: waterBottleLargeAmount ?? this.waterBottleLargeAmount,
       egg: egg ?? this.egg,
       tokwa: tokwa ?? this.tokwa,
-      userMoney: userMoney ?? this.userMoney,
+      userMoney: userMoney ?? this.userMoney, isCompleted: null,
     );
   }
 
+  // Add to toJson method
   Map<String, dynamic> toJson() => {
+    'createdAt': createdAt.toIso8601String(), // Convert DateTime to string
     'paresRegularAmount': paresRegularAmount,
     'paresMamiAmount': paresMamiAmount,
     'paresBagnetAmount': paresBagnetAmount,
@@ -119,9 +128,12 @@ class ReceiptData {
     'egg': egg,
     'tokwa': tokwa,
     'userMoney': userMoney,
+    'isCompleted': isCompleted,
   };
 
+  // Add to fromJson factory
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
+    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
     paresRegularAmount: json['paresRegularAmount'] ?? 0,
     paresMamiAmount: json['paresMamiAmount'] ?? 0,
     paresBagnetAmount: json['paresBagnetAmount'] ?? 0,
@@ -138,6 +150,7 @@ class ReceiptData {
     egg: json['egg'] ?? 0,
     tokwa: json['tokwa'] ?? 0,
     userMoney: json['userMoney'] ?? 0,
+    isCompleted: json['isCompleted'] ?? false,
   );
 }
 
@@ -196,7 +209,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
   void _addReceipt() {
     setState(() {
-      receipts.add(ReceiptData());
+      receipts.add(ReceiptData(isCompleted: null));
     });
     saveReceipts(receipts);
   }

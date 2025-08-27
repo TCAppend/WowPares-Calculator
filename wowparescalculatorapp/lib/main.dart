@@ -62,27 +62,34 @@ class ReceiptsDashboardPage extends StatefulWidget {
   State<ReceiptsDashboardPage> createState() => _ReceiptsDashboardPageState();
 }
 
-class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
+class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> with SingleTickerProviderStateMixin {
   List<String> drawerItems = [];
   List<ReceiptData> receipts = [];
-
+  late TabController _tabController;
+  
   @override
   void initState() {
     super.initState();
+    // Initialize tab controller first
+    _tabController = TabController(length: 1, vsync: this);
+    
     loadReceipts().then((loadedReceipts) {
       setState(() {
         receipts = loadedReceipts;
-        drawerItems = List.generate(
-            loadedReceipts.length, (i) => 'New Receipt ${i + 1}');
+        drawerItems = List.generate(loadedReceipts.length, (i) {
+          final date = loadedReceipts[i].createdAt;
+          return 'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+        });
       });
     });
   }
 
-  // Separate function for adding receipt
+  // Update _addNewReceipt to include date in name
   void _addNewReceipt() {
     setState(() {
-      receipts.add(ReceiptData());
-      drawerItems.add('New Receipt ${drawerItems.length + 1}');
+      final now = DateTime.now();
+      receipts.add(ReceiptData(isCompleted: false));  // Explicitly set initial value
+      drawerItems.add('Receipt ${now.day}/${now.month} ${now.hour}:${now.minute.toString().padLeft(2, '0')}');
     });
   }
 
@@ -131,54 +138,127 @@ Widget NavigateReceipt() {
     
   }
 
+  // Add this method in _ReceiptsDashboardPageState class after initState
+List<ReceiptData> _getSortedReceipts() {
+  // Create a copy of receipts to avoid modifying the original list during sort
+  final sortedReceipts = List<ReceiptData>.from(receipts);
+  // Sort by date, newest first
+  sortedReceipts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  return sortedReceipts;
+}
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 182, 25, 25),
-        title: const Text('Receipts', style: TextStyle(color: Colors.white)),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color.fromARGB(255, 182, 25, 25)),
-              child: Text(
-                'Wow Pares Calculator',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            Navigatetodashboard(),
-            NavigateReceipt(),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.add, color: Colors.white),
-              label: const Text('Add Receipt'),
-              onPressed: _addReceipt,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 182, 25, 25),
-                foregroundColor: Colors.white,
-              ),
-            ),
+    return DefaultTabController( // Add this wrapper
+      length: 1,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+          title: const Text('Receipts', style: TextStyle(color: Colors.white)),
+          bottom: TabBar(
+            controller: _tabController, // Add this line
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            tabs: const [
+              Tab(text: 'All Receipts'),
+            ],
           ),
-          Expanded(
-            child: receipts.isEmpty
-                ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
-                : ListView.builder(
-                    itemCount: receipts.length,
-                    itemBuilder: (context, index) {
-                      final receipt = receipts[index];
-                      return ListTile(
-                        title: Text(drawerItems[index]),
-                        subtitle: Text('Total: ${receipt.getTotal()}'),
-                        onTap: () {
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(color: Color.fromARGB(255, 182, 25, 25)),
+                child: Text(
+                  'Wow Pares Calculator',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              Navigatetodashboard(),
+              NavigateReceipt(),
+            ],
+          ),
+        ),
+        body: Column(
+            children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+              children: [
+                Expanded(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  label: const Text('Add Receipt'),
+                  onPressed: _addReceipt,
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+                  foregroundColor: Colors.white,
+                  ),
+                ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.save, color: Colors.white),
+                  label: const Text('Save to .csv'),
+                  onPressed: _addReceipt,
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 41, 185, 22),
+                  foregroundColor: Colors.white,
+                  ),
+                ),
+                ),
+              ],
+              ),
+            ),
+            Expanded(
+              child: receipts.isEmpty
+                  ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
+                  : ListView.builder(
+                      itemCount: receipts.length,
+                      itemBuilder: (context, index) {
+                        final sortedReceipts = _getSortedReceipts();
+                        final receipt = sortedReceipts[index];
+                        final date = receipt.createdAt;
+                        
+                        return ListTile(
+                          leading: Checkbox(
+                            value: receipt.isCompleted,
+                            activeColor: const Color.fromARGB(255, 182, 25, 25),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                receipt.isCompleted = value ?? false;
+                                saveReceipts(receipts); // Make sure this is called
+                              });
+                            },
+                          ),
+                          title: Text(
+                            'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                              fontWeight: index == 0 ? FontWeight.bold : FontWeight.normal,
+                              decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total: ${receipt.getTotal()}',
+                                style: TextStyle(
+                                  color: index == 0 ? Theme.of(context).primaryColor : null,
+                                ),
+                              ),
+                              Text(
+                                '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: index == 0 ? Colors.grey[600] : Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -189,30 +269,37 @@ Widget NavigateReceipt() {
         ),
     ).then((_) {
         saveReceipts(receipts); // Save receipts
-        setState(() {}); // Add this line to trigger rebuild
+        setState(() {}); // trigger rebuild
     });
 },
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          tooltip: 'Delete Receipt',
-                          onPressed: () {
-                            setState(() {
-                              receipts.removeAt(index);
-                              drawerItems.removeAt(index);
-                            });
-                            saveReceipts(receipts);
-                          },
-                        ),
-                        
-                      );
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            tooltip: 'Delete Receipt',
+                            onPressed: () {
+                              setState(() {
+                                receipts.removeAt(index);
+                                drawerItems.removeAt(index);
+                              });
+                              saveReceipts(receipts);
+                            },
+                          ),
+                          
+                        );
                        
-                    },
-                    
-                  ),
-          ),
-        ],
+                      },
+                      
+                    ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }
 
