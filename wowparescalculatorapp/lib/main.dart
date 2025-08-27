@@ -26,8 +26,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  int _selectedIndex = 1; // Start with Dashboard selected
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,7 @@ class WelcomePage extends StatelessWidget {
           icon: const Icon(Icons.receipt_long),
           label: const Text('Go to Receipts'),
           onPressed: () {
-            Navigator.pushReplacement(  // Change this line from push to pushReplacement
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const ReceiptsDashboardPage(),
@@ -49,6 +56,33 @@ class WelcomePage extends StatelessWidget {
             );
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),
+            label: 'Receipts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: const Color.fromARGB(255, 182, 25, 25),
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          if (index == 0) { // Receipts
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReceiptsDashboardPage(),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -66,6 +100,7 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> with Sing
   List<String> drawerItems = [];
   List<ReceiptData> receipts = [];
   late TabController _tabController;
+  int _selectedIndex = 0; // Add this for bottom nav
   
   @override
   void initState() {
@@ -113,31 +148,6 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> with Sing
     _saveAndNavigate();
   }
 
-  Widget Navigatetodashboard() {
-    return ListTile(
-      title: const Text('Dashboard'),
-      onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const WelcomePage(),
-              ),
-            );
-          },
-    );
-    
-  }
-
-Widget NavigateReceipt() {
-    return ListTile( 
-      title: const Text('Receipts'),
-      onTap: () {
-        Navigator.pop(context); // This will just close the drawer
-      },
-    );
-    
-  }
-
   // Add this method in _ReceiptsDashboardPageState class after initState
 List<ReceiptData> _getSortedReceipts() {
   // Create a copy of receipts to avoid modifying the original list during sort
@@ -149,14 +159,14 @@ List<ReceiptData> _getSortedReceipts() {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController( // Add this wrapper
+    return DefaultTabController(
       length: 1,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 182, 25, 25),
           title: const Text('Receipts', style: TextStyle(color: Colors.white)),
           bottom: TabBar(
-            controller: _tabController, // Add this line
+            controller: _tabController,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             tabs: const [
@@ -164,24 +174,9 @@ List<ReceiptData> _getSortedReceipts() {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(color: Color.fromARGB(255, 182, 25, 25)),
-                child: Text(
-                  'Wow Pares Calculator',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Navigatetodashboard(),
-              NavigateReceipt(),
-            ],
-          ),
-        ),
+        // Remove the drawer
         body: Column(
-            children: [
+          children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -202,7 +197,9 @@ List<ReceiptData> _getSortedReceipts() {
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.save, color: Colors.white),
                   label: const Text('Save to .csv'),
-                  onPressed: _addReceipt,
+                  onPressed: () {
+                    // Implement your save to CSV functionality here
+                  },
                   style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 41, 185, 22),
                   foregroundColor: Colors.white,
@@ -291,6 +288,34 @@ List<ReceiptData> _getSortedReceipts() {
                     ),
             ),
           ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.receipt_long),
+              label: 'Receipts',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard),
+              label: 'Dashboard',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: const Color.fromARGB(255, 182, 25, 25),
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+            if (index == 1) { // Dashboard
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WelcomePage(),
+                ),
+              );
+            }
+            // index 0 is current page (Receipts), so no navigation needed
+          },
         ),
       ),
     );
