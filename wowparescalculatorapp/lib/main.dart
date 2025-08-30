@@ -96,234 +96,262 @@ class ReceiptsDashboardPage extends StatefulWidget {
   State<ReceiptsDashboardPage> createState() => _ReceiptsDashboardPageState();
 }
 
-class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> with SingleTickerProviderStateMixin {
-  List<String> drawerItems = [];
+class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
   List<ReceiptData> receipts = [];
-  late TabController _tabController;
-  int _selectedIndex = 0; // Add this for bottom nav
-  
+  String? selectedDate;
+
   @override
   void initState() {
     super.initState();
-    // Initialize tab controller first
-    _tabController = TabController(length: 1, vsync: this);
-    
     loadReceipts().then((loadedReceipts) {
-      setState(() {
-        receipts = loadedReceipts;
-        drawerItems = List.generate(loadedReceipts.length, (i) {
-          final date = loadedReceipts[i].createdAt;
-          return 'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+      if (mounted) {
+        setState(() {
+          receipts = loadedReceipts;
+          // Set initial selected date to today if receipts exist
+          if (receipts.isNotEmpty) {
+            final today = DateTime.now();
+            selectedDate = _formatDate(today);
+          }
         });
+      }
+    });
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+  }
+
+  Map<String, List<ReceiptData>> _groupReceiptsByDate() {
+    Map<String, List<ReceiptData>> grouped = {};
+    for (var receipt in receipts) {
+      String dateKey = _formatDate(receipt.createdAt);
+      grouped.putIfAbsent(dateKey, () => []).add(receipt);
+    }
+    return Map.fromEntries(
+      grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key))
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final groupedReceipts = _groupReceiptsByDate();
+    final dates = groupedReceipts.keys.toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+        title: const Text('Receipts', style: TextStyle(color: Colors.white)),
+        actions: [
+          if (dates.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white38),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: dates.contains(selectedDate) ? selectedDate : null,
+                    dropdownColor: const Color.fromARGB(255, 182, 25, 25),
+                    icon: const Icon(Icons.calendar_today, color: Colors.white),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    items: dates.map((date) => DropdownMenuItem(
+                      value: date,
+                      child: Text(date),
+                    )).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDate = value;
+                      });
+                    },
+                    hint: const Text(
+                      'Select Date',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Add Receipt Button Row
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    label: const Text('Add Receipt', style: TextStyle(color: Colors.white),),
+                    onPressed: _addNewReceipt,
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 18),
+                      backgroundColor: const Color.fromARGB(255, 182, 25, 25),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Receipts List
+          Expanded(
+            child: receipts.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No receipts yet.\nTap the button above to add one!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : selectedDate == null
+                    ? const Center(child: Text('Select a date', style: TextStyle(fontSize: 20)),)
+                    : ListView.separated(
+                        itemCount: groupedReceipts[selectedDate]?.length ?? 0,
+                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final receipt = groupedReceipts[selectedDate]![index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: ListTile(
+                              leading: Checkbox(
+                                value: receipt.isCompleted,
+                                activeColor: const Color.fromARGB(255, 182, 25, 25),
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    receipt.isCompleted = value ?? false;
+                                    saveReceipts(receipts);
+                                  });
+                                },
+                              ),
+                              title: Text(
+                                'Receipt ${receipt.createdAt.hour}:${receipt.createdAt.minute.toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'Total: ₱${receipt.getTotal()}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () => _navigateToReceipt(receipt),
+                                    color: Colors.blue,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () => _deleteReceipt(receipt),
+                                    color: Colors.red,
+                                  ),
+                                ],
+                              ),
+                              onTap: () => _navigateToReceipt(receipt),
+                            ),
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),
+            label: 'Receipts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: const Color.fromARGB(255, 182, 25, 25),
+        onTap: (index) {
+          if (index == 1) { // Dashboard
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const WelcomePage(),
+              ),
+            );
+          }
+          // index 0 is current page (Receipts), so no navigation needed
+        },
+      ),
+    );
+  }
+
+  void _addNewReceipt() {
+    setState(() {
+      final newReceipt = ReceiptData(isCompleted: false);
+      receipts.add(newReceipt);
+      
+      // Navigate to the receipt page immediately
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => receipt_page.ReceiptPage(
+            title: 'Receipt ${newReceipt.createdAt.day}/${newReceipt.createdAt.month} ${newReceipt.createdAt.hour}:${newReceipt.createdAt.minute}',
+            receiptData: newReceipt,
+          ),
+        ),
+      ).then((_) {
+        setState(() {});
+        saveReceipts(receipts);
       });
     });
   }
 
-  // Update _addNewReceipt to include date in name
-  void _addNewReceipt() {
-    setState(() {
-      final now = DateTime.now();
-      receipts.add(ReceiptData(isCompleted: false));  // Explicitly set initial value
-      drawerItems.add('Receipt ${now.day}/${now.month} ${now.hour}:${now.minute.toString().padLeft(2, '0')}');
-    });
-  }
-
-  // Separate function for saving receipt
-  void _saveAndNavigate() {
-    saveReceipts(receipts);
+  void _navigateToReceipt(ReceiptData receipt) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => receipt_page.ReceiptPage(
-          title: drawerItems.last,
-          receiptData: receipts.last,
+          title: 'Receipt ${receipt.createdAt.day}/${receipt.createdAt.month} ${receipt.createdAt.hour}:${receipt.createdAt.minute}',
+          receiptData: receipt,
         ),
       ),
-    );
+    ).then((_) {
+      setState(() {});
+      saveReceipts(receipts);
+    });
   }
 
-  // Combined function that calls both
-  void _addReceipt() {
-    _addNewReceipt();
-    _saveAndNavigate();
-  }
-
-  // Add this method in _ReceiptsDashboardPageState class after initState
-List<ReceiptData> _getSortedReceipts() {
-  // Create a copy of receipts to avoid modifying the original list during sort
-  final sortedReceipts = List<ReceiptData>.from(receipts);
-  // Sort by date, newest first
-  sortedReceipts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  return sortedReceipts;
-}
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 1,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 182, 25, 25),
-          title: const Text('Receipts', style: TextStyle(color: Colors.white)),
-          bottom: TabBar(
-            controller: _tabController,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            tabs: const [
-              Tab(text: 'All Receipts'),
-            ],
-          ),
-        ),
-        // Remove the drawer
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-              children: [
-                Expanded(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text('Add Receipt'),
-                  onPressed: _addReceipt,
-                  style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 182, 25, 25),
-                  foregroundColor: Colors.white,
-                  ),
-                ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save, color: Colors.white),
-                  label: const Text('Save to .csv'),
-                  onPressed: () {
-                    // Implement your save to CSV functionality here
-                  },
-                  style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 41, 185, 22),
-                  foregroundColor: Colors.white,
-                  ),
-                ),
-                ),
-              ],
-              ),
-            ),
-            Expanded(
-              child: receipts.isEmpty
-                ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
-                : ListView.separated(
-                  itemCount: receipts.length,
-                  separatorBuilder: (context, index) => const Divider(height: 0),
-                  itemBuilder: (context, index) {
-                  final sortedReceipts = _getSortedReceipts();
-                  final receipt = sortedReceipts[index];
-                  final date = receipt.createdAt;
-                  
-                  return ListTile(
-                    leading: Checkbox(
-                    value: receipt.isCompleted,
-                    activeColor: const Color.fromARGB(255, 182, 25, 25),
-                    onChanged: (bool? value) {
-                      setState(() {
-                      receipt.isCompleted = value ?? false;
-                      saveReceipts(receipts); // Make sure this is called
-                      });
-                    },
-                    ),
-                    title: Text(
-                    'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontWeight: index == 0 ? FontWeight.bold : FontWeight.normal,
-                      decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
-                    ),
-                    ),
-                    subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                      'Total: ${receipt.getTotal()}',
-                      style: TextStyle(
-                        color: index == 0 ? Theme.of(context).primaryColor : null,
-                      ),
-                      ),
-                      Text(
-                      '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: index == 0 ? Colors.grey[600] : Colors.grey,
-                      ),
-                      ),
-                    ],
-                    ),
-                    onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => receipt_page.ReceiptPage(
-                        title: drawerItems[index],
-                        receiptData: receipts[index],
-                      ),
-                      ),
-                    ).then((_) {
-                      saveReceipts(receipts); // Save receipts
-                      setState(() {}); // trigger rebuild
-                    });
-                    },
-                    trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    tooltip: 'Delete Receipt',
-                    onPressed: () {
-                      setState(() {
-                      receipts.removeAt(index);
-                      drawerItems.removeAt(index);
-                      });
-                      saveReceipts(receipts);
-                    },
-                    ),
-                  );
-                  },
-                ),
-            ),
-            
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long),
-              label: 'Receipts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard),
-              label: 'Dashboard',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: const Color.fromARGB(255, 182, 25, 25),
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-            if (index == 1) { // Dashboard
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const WelcomePage(),
-                ),
-              );
-            }
-            // index 0 is current page (Receipts), so no navigation needed
-          },
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  void _deleteReceipt(ReceiptData receipt) {
+    setState(() {
+      receipts.remove(receipt);
+      
+      // Update selectedDate if we just deleted the last receipt for that date
+      final groupedReceipts = _groupReceiptsByDate();
+      if (!groupedReceipts.containsKey(selectedDate)) {
+        selectedDate = groupedReceipts.isEmpty ? null : groupedReceipts.keys.first;
+      }
+      
+      saveReceipts(receipts);
+    });
   }
 }
 
