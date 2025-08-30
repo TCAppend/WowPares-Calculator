@@ -211,82 +211,81 @@ List<ReceiptData> _getSortedReceipts() {
             ),
             Expanded(
               child: receipts.isEmpty
-                  ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
-                  : ListView.builder(
-                      itemCount: receipts.length,
-                      itemBuilder: (context, index) {
-                        final sortedReceipts = _getSortedReceipts();
-                        final receipt = sortedReceipts[index];
-                        final date = receipt.createdAt;
-                        
-                        return ListTile(
-                          leading: Checkbox(
-                            value: receipt.isCompleted,
-                            activeColor: const Color.fromARGB(255, 182, 25, 25),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                receipt.isCompleted = value ?? false;
-                                saveReceipts(receipts); // Make sure this is called
-                              });
-                            },
-                          ),
-                          title: Text(
-                            'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                            style: TextStyle(
-                              fontWeight: index == 0 ? FontWeight.bold : FontWeight.normal,
-                              decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
-                            ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total: ${receipt.getTotal()}',
-                                style: TextStyle(
-                                  color: index == 0 ? Theme.of(context).primaryColor : null,
-                                ),
-                              ),
-                              Text(
-                                '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: index == 0 ? Colors.grey[600] : Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => receipt_page.ReceiptPage(
-                title: drawerItems[index],
-                receiptData: receipts[index],
-            ),
-        ),
-    ).then((_) {
-        saveReceipts(receipts); // Save receipts
-        setState(() {}); // trigger rebuild
-    });
-},
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            tooltip: 'Delete Receipt',
-                            onPressed: () {
-                              setState(() {
-                                receipts.removeAt(index);
-                                drawerItems.removeAt(index);
-                              });
-                              saveReceipts(receipts);
-                            },
-                          ),
-                          
-                        );
-                       
-                      },
-                      
+                ? const Center(child: Text('No receipts yet. Use the button above to add one!'))
+                : ListView.separated(
+                  itemCount: receipts.length,
+                  separatorBuilder: (context, index) => const Divider(height: 0),
+                  itemBuilder: (context, index) {
+                  final sortedReceipts = _getSortedReceipts();
+                  final receipt = sortedReceipts[index];
+                  final date = receipt.createdAt;
+                  
+                  return ListTile(
+                    leading: Checkbox(
+                    value: receipt.isCompleted,
+                    activeColor: const Color.fromARGB(255, 182, 25, 25),
+                    onChanged: (bool? value) {
+                      setState(() {
+                      receipt.isCompleted = value ?? false;
+                      saveReceipts(receipts); // Make sure this is called
+                      });
+                    },
                     ),
+                    title: Text(
+                    'Receipt ${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                    style: TextStyle(
+                      fontWeight: index == 0 ? FontWeight.bold : FontWeight.normal,
+                      decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
+                    ),
+                    ),
+                    subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                      'Total: ${receipt.getTotal()}',
+                      style: TextStyle(
+                        color: index == 0 ? Theme.of(context).primaryColor : null,
+                      ),
+                      ),
+                      Text(
+                      '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: index == 0 ? Colors.grey[600] : Colors.grey,
+                      ),
+                      ),
+                    ],
+                    ),
+                    onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => receipt_page.ReceiptPage(
+                        title: drawerItems[index],
+                        receiptData: receipts[index],
+                      ),
+                      ),
+                    ).then((_) {
+                      saveReceipts(receipts); // Save receipts
+                      setState(() {}); // trigger rebuild
+                    });
+                    },
+                    trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    tooltip: 'Delete Receipt',
+                    onPressed: () {
+                      setState(() {
+                      receipts.removeAt(index);
+                      drawerItems.removeAt(index);
+                      });
+                      saveReceipts(receipts);
+                    },
+                    ),
+                  );
+                  },
+                ),
             ),
+            
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
