@@ -16,6 +16,32 @@ class ReceiptPage extends StatefulWidget {
 class _ReceiptPageState extends State<ReceiptPage> {
   late TextEditingController userMoneyController;
 
+  void _clearReceipt() {
+  setState(() {
+    // reset all counters
+    widget.receiptData.paresRegularAmount = 0;
+    widget.receiptData.paresMamiAmount = 0;
+    widget.receiptData.paresBagnetAmount = 0;
+    widget.receiptData.paresOverloadAmount = 0;
+    widget.receiptData.lugawAmount = 0;
+    widget.receiptData.lugawSpecialAmount = 0;
+    widget.receiptData.cokeAmount = 0;
+    widget.receiptData.spriteAmount = 0;
+    widget.receiptData.mountainDewAmount = 0;
+    widget.receiptData.royalAmount = 0;
+    widget.receiptData.waterBottleSmallAmount = 0;
+    widget.receiptData.waterBottleLargeAmount = 0;
+    widget.receiptData.rice = 0;
+    widget.receiptData.egg = 0;
+    widget.receiptData.tokwa = 0;
+
+    // reset user money
+    widget.receiptData.userMoney = 0;
+    userMoneyController.clear(); // clears the text box
+  });
+}
+
+
   @override
   void initState() {
     super.initState();
@@ -306,8 +332,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         );
                       },
                       child: const Text("Results"),
+                      
                     ),
                   ),
+                  
                   const SizedBox(width: 8),
                 ],
               ),

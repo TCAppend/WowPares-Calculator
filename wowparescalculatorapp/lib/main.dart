@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wowparescalculatorapp/receipt_page.dart' as receipt_page;
 import 'package:wowparescalculatorapp/receipt.dart';
 import 'package:wowparescalculatorapp/bottombar.dart' as bottom_bar;
+import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,59 @@ void main() async {
   runApp(const MyApp());
 
 }
+
+// Load receipts from SharedPreferences
+Future<Map<String, Map<String, dynamic>>> calculateDailyStats() async {
+  final receipts = await loadReceipts();
+
+  Map<String, Map<String, dynamic>> dailyStats = {};
+
+  for (var r in receipts) {
+    String dateKey =
+        "${r.createdAt.day.toString().padLeft(2, '0')}/${r.createdAt.month.toString().padLeft(2, '0')}/${r.createdAt.year}";
+
+    if (!dailyStats.containsKey(dateKey)) {
+      dailyStats[dateKey] = {"orders": 0, "revenue": 0.0};
+    }
+
+    dailyStats[dateKey]!["orders"] =
+        (dailyStats[dateKey]!["orders"] as int) + 1;
+    dailyStats[dateKey]!["revenue"] =
+        (dailyStats[dateKey]!["revenue"] as double) + r.getTotal();
+  }
+
+  return dailyStats;
+}
+Future<Map<String, dynamic>> calculateStats() async {
+  final receipts = await loadReceipts();
+  final now = DateTime.now();
+  final todayKey =
+      "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}";
+
+  int totalOrders = receipts.length;
+  double totalRevenue = receipts.fold(0.0, (sum, r) => sum + r.getTotal());
+
+  int dailyOrders = 0;
+  double dailyRevenue = 0.0;
+
+  for (var r in receipts) {
+    String dateKey =
+        "${r.createdAt.day.toString().padLeft(2, '0')}/${r.createdAt.month.toString().padLeft(2, '0')}/${r.createdAt.year}";
+
+    if (dateKey == todayKey) {
+      dailyOrders += 1;
+      dailyRevenue += r.getTotal();
+    }
+  }
+
+  return {
+    "totalOrders": totalOrders,
+    "totalRevenue": totalRevenue,
+    "dailyOrders": dailyOrders,
+    "dailyRevenue": dailyRevenue,
+  };
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -48,21 +102,13 @@ class _WelcomePageState extends State<WelcomePage> {
         backgroundColor: const Color.fromARGB(255, 182, 25, 25),
         title: const Text('WowPares Calculator', style: TextStyle(color: Colors.white)),
       ),
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.receipt_long),
-          label: const Text('Go to Receipts'),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ReceiptsDashboardPage(),
-                
-              ),
-            );
-          },
-        ),
-      ),
+      body:  Column(
+        children: [
+          Totalordersandrevenue(),
+          Dailysummary(),
+        ],
+      ), 
+      
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -225,7 +271,7 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
                     ? const Center(child: Text('Select a date', style: TextStyle(fontSize: 20)),)
                     : ListView.separated(
                         itemCount: groupedReceipts[selectedDate]?.length ?? 0,
-                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        separatorBuilder: (context, index) => const Divider(height: 5),
                         itemBuilder: (context, index) {
                           final receipt = groupedReceipts[selectedDate]![index];
                           return Card(
@@ -244,14 +290,15 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
                                   });
                                 },
                               ),
-                              title: Text(
-                                'Receipt ${receipt.createdAt.hour}:${receipt.createdAt.minute.toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                  decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                  title: Text(
+  'Receipt ${DateFormat('h:mm a').format(receipt.createdAt)}',
+  style: TextStyle(
+    decoration: receipt.isCompleted ? TextDecoration.lineThrough : null,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  ),
+),
+
                               subtitle: Text(
                                 'Total: ₱${receipt.getTotal()}',
                                 style: const TextStyle(
@@ -361,4 +408,161 @@ class _ReceiptsDashboardPageState extends State<ReceiptsDashboardPage> {
   }
 }
 
+extension on DateTime {
+  get hourOfPeriod =>   hour % 12;
+}
+
+
+class Totalordersandrevenue extends StatefulWidget {
+  const Totalordersandrevenue({super.key});
+
+  @override
+  _TotalordersandrevenueState createState() => _TotalordersandrevenueState();
+}
+
+class _TotalordersandrevenueState extends State<Totalordersandrevenue> {
+  int totalOrders = 0;
+  double totalRevenue = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  Future<void> _loadStats() async {
+    final stats = await calculateStats();
+    if (mounted) {
+      setState(() {
+        totalOrders = stats["totalOrders"];
+        totalRevenue = stats["totalRevenue"];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.lime.withOpacity(0.6),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: ListTile(
+          leading: const Icon(Icons.shopping_cart, color: Colors.black87),
+          title: Text(
+            "Total / Overall Orders: $totalOrders",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+          ),
+          subtitle: Text(
+            "Total / Overall Revenue: ₱${totalRevenue.toStringAsFixed(2)}",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class Dailysummary extends StatefulWidget {
+  const Dailysummary({super.key});
+
+  @override
+  _DailysummaryState createState() => _DailysummaryState();
+}
+
+class _DailysummaryState extends State<Dailysummary> {
+  Map<String, Map<String, dynamic>> dailyStats = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  Future<void> _loadStats() async {
+    final stats = await calculateDailyStats();
+    if (mounted) {
+      setState(() {
+        dailyStats = stats;
+      });
+    }
+  }
+
+  String _getLabel(String dateKey) {
+    final today = DateTime.now();
+    final parts = dateKey.split("/");
+    final date = DateTime(
+      int.parse(parts[2]),
+      int.parse(parts[1]),
+      int.parse(parts[0]),
+    );
+
+    final diff = date.difference(today).inDays;
+    if (diff == 0) return "Today";
+    if (diff == -1) return "Yesterday";
+    if (diff == 1) return "Tomorrow";
+    return dateKey;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sortedKeys = dailyStats.keys.toList()
+      ..sort((a, b) {
+        final partsA = a.split("/");
+        final partsB = b.split("/");
+        final dateA = DateTime(int.parse(partsA[2]), int.parse(partsA[1]), int.parse(partsA[0]));
+        final dateB = DateTime(int.parse(partsB[2]), int.parse(partsB[1]), int.parse(partsB[0]));
+        return dateB.compareTo(dateA); // newest first
+      });
+
+    return Card(
+      color: Colors.red.withOpacity(0.6),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const ListTile(
+              leading: Icon(Icons.assessment_outlined, color: Colors.black87),
+              title: Text(
+                "Daily Sales Summary",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            dailyStats.isEmpty
+                ? const Center(child: Text("No sales data yet."))
+                : SizedBox(
+                    height: 300, // 👈 limit height so it doesn't overflow
+                    child: ListView.separated(
+                      itemCount: sortedKeys.length,
+                      separatorBuilder: (_, __) => const Divider(height: 5),
+                      itemBuilder: (context, index) {
+                        final key = sortedKeys[index];
+                        final stats = dailyStats[key]!;
+                        return ListTile(
+                          leading: const Icon(Icons.calendar_today, color: Colors.black87),
+                          title: Text(
+                            _getLabel(key),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            "Orders: ${stats['orders']} | Revenue: ₱${(stats['revenue'] as double).toStringAsFixed(2)}",
+                            style: const TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
